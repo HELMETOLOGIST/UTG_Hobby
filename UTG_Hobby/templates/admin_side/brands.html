@@ -1,0 +1,52 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Brands{% endblock %}
+{% block content  %}
+
+
+  <main id="main" class="main">
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Brands</h3>
+              <a href="{% url "add_brands" %}"><button type="submit" class="btn btn-primary">Add Brands</button></a>
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Brands</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for brand in brands %}
+                  <tr>
+                    <th scope="row">{{brand.id}}</th>
+                    <td>{{brand.name}}</td>
+                    {% if brand.is_listed %}
+                        <td>
+                            <a href="../../brand_status/{{brand.id}}"><button class="badge badge-danger" style="color:red;">Unlist</button></a>
+                        </td>
+                        {%else%}
+                        <td>
+                            <a href="../../brand_status/{{brand.id}}"><button class="badge badge-success" style="color:green;">List</button></a>
+                        </td>
+                        {%endif%}
+                    <td><a href="../../edit_brands/{{brand.id}}" class="btn btn-primary">Edit</a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}

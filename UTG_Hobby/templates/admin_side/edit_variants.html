@@ -1,0 +1,58 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Edit Variants{% endblock %}
+{% block content  %}
+
+<main id="main" class="main">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+              <h5 class="card-title">Edit Variants</h5>
+
+              <!-- No Labels Form -->
+              <form class="row g-3" id="variantForm" enctype="multipart/form-data" method="POST" action="">
+                {% csrf_token %}
+                <div class="col-md-12">
+                  <input type="text" class="form-control" placeholder="Product Name" name="product_name" value="{{product.products_name}}" disabled>
+                </div>
+                <div class="col-12">
+                  <input type="text" class="form-control" placeholder="Color" name="color" value="{{variant.color}}">
+                </div>
+                <div class="col-12">
+                  <input type="number" class="form-control" placeholder="Price" name="price" value="{{variant.price}}">
+                </div>
+                <div class="col-12">
+                  <input type="number" class="form-control" placeholder="Stock" name="quantity" value="{{variant.quantity}}">
+                </div>
+                <div class="col-10">.
+                  <div class="row mb-3">
+                    <div class="col-sm-10 col-md-4">
+                        <input class="form-control" type="file" id="formFile" name="images" multiple>
+                        <span class="error-message text-danger mt-2" id="images-error"></span>  
+                    </div>
+                </div>
+                </div>
+
+                <div class="col-10">
+                <div class="row mb-3">
+                  <label for="inputNumber" class="col-sm-2 col-form-label">Existing Images</label>
+                  <div class="col-sm-10 col-md-4">
+                    {% for i in images %}
+                      <img src="{{i.image.url}}" alt="{{i.image}}" class="color-thumbnail border-2 " height='70px'></a>
+                    {% endfor %}
+                  </div>
+              </div>
+            </div>
+    
+              <br><br>
+              <div class="col-10">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary">Update Variant</button>
+                </div>
+              </div>
+              </form><!-- End No Labels Form -->
+
+            </div>
+          </div>
+        </div>
+          {% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Checkout{% endblock %}
+
+
+{% block content %}
+
+  <!--================Home Banner Area =================-->
+  <!-- breadcrumb start-->
+  <section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="breadcrumb_iner">
+            <div class="breadcrumb_iner_item">
+              <h2 class='text-warning'>Add Adrress </h2>
+              <p class='text-white'>Home <span>-</span> Add Address </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- breadcrumb start-->
+
+  <!--================Checkout Area =================-->
+  <section class="checkout_area padding_top">
+    <div class="container">
+    <div class="billing_details">
+      <div class="row">
+        <div class="col-lg-12">
+          <h3>Add Addres</h3>
+          <form class="row contact_form" action="#" method="POST" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="col-md-6 form-group">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required>
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Phone" required>
+            </div>
+            <div class="col-md-12 form-group">
+              <label for="street_address" class="form-label">Street Address</label>
+              <input type="text" class="form-control" id="street_address" name="street_address" placeholder="Enter Street Address" required>
+            </div>
+            <div class="col-md-12 form-group">
+              <label for="city" class="form-label">City</label>
+              <input type="text" class="form-control" id="city" name="city" placeholder="Enter City" required>
+            </div>
+            <div class="col-md-12 form-group">
+              <label for="state" class="form-label">State</label>
+              <input type="text" class="form-control" id="state" name="state" placeholder="Enter State" required>
+            </div>
+            <div class="col-md-12 form-group">
+              <label for="pincode" class="form-label">Pincode</label>
+              <input type="text" class="form-control" id="pincode" name="pincode" placeholder="Enter Pincode" required>
+            </div>
+            <!-- Submit Button -->
+            <div class="col-md-12 form-group">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <!--================End Checkout Area =================-->
+
+<!-- Include the SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+  function validateForm() {
+    var name = document.getElementById('name').value;
+    var phone = document.getElementById('phone').value;
+    var streetAddress = document.getElementById('street_address').value;
+    var city = document.getElementById('city').value;
+    var state = document.getElementById('state').value;
+    var pincode = document.getElementById('pincode').value;
+
+    // Validate Name
+    var nameRegex = /^[A-Za-z]{3,}$/;
+    if (!nameRegex.test(name)) {
+      showErrorAlert('Invalid Name. It must be at least 3 letters without spaces or symbols.');
+      return false;
+    }
+
+    // Validate Phone Number
+    var phoneRegex = /^(?:(\d)(?!\1{9})){10}$/;
+    if (!phoneRegex.test(phone)) {
+    showErrorAlert('Invalid Phone Number. It must be 10 digits without spaces, letters, or symbols, and cannot be all the same digit.');
+    return false;
+    }
+
+    // Validate Street Address, City, State (Minimum 3 letters)
+    var addressRegex = /^[A-Za-z0-9\s,()\-\[\]]+$/;
+    if (!addressRegex.test(streetAddress) || !addressRegex.test(city) || !addressRegex.test(state)) {
+        showErrorAlert('Invalid Street Address, City, or State. They must be at least 3 letters without spaces or symbols, and can include at most one space, comma, parentheses, hyphen, or square brackets.');
+        return false;
+    }
+    
+    
+
+
+
+    // Validate Pincode (Exactly 6 digits)
+    var pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(pincode)) {
+      showErrorAlert('Invalid Pincode. It must be exactly 6 digits without spaces, letters, or symbols.');
+      return false;
+    }
+
+    // If all validations pass, submit the form
+    return true;
+  }
+
+  // Function to show SweetAlert error message
+  function showErrorAlert(message) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Validation Error',
+      text: message,
+    });
+  }
+</script>
+
+
+{% endblock %}

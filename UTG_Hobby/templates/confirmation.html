@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Confirmation{% endblock %}
+
+{% block content %}
+
+  <!-- breadcrumb start-->
+  <section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="breadcrumb_iner">
+            <div class="breadcrumb_iner_item">
+              <h2 class='text-warning'>Order Confirmation</h2>
+              <p class='text-white'>Home <span>-</span> Order Confirmation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- breadcrumb start-->
+
+  <!--================ confirmation part start =================-->
+  <section class="confirmation_part padding_top" >
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="confirmation_tittle">
+            <span><h2 class="font-weight-bold text-uppercase text-success">Thank you. Your order has been received.</h2></span>
+          </div>
+        </div>
+        <div class="col-lg-6 col-lx-4">
+        
+          <div class="single_confirmation_details mr-4">
+            <h4>order info</h4>
+            <ul>
+              <li>
+                <p>Name</p><span>: {{order.address.name}}</span>
+              </li>
+              <li>
+                <p>Phone</p><span>: {{order.address.phone}}</span>
+              </li>
+              <li>
+                <p>total</p><span>: {{order.total_price}}</span>
+              </li>
+              <li>
+                <p>Payment Method</p><span class="text-uppercase">: {{order.payment_mode}}</span>
+              </li>
+            </ul>
+          </div>
+        
+        </div>
+          
+        <div class="col-lg-6 col-lx-4" >
+          <div class="single_confirmation_details mr-4" >
+            <h4>shipping Address</h4>
+            <ul>
+                <li>
+                    <p>Address</p><span>: {{order.address.street_address}}</span>
+                </li>
+                  <li>
+                    <p>city</p><span>: {{order.address.city}}</span>
+                  </li>
+                  <li>
+                    <p>State</p><span>: {{order.address.state}}</span>
+                  </li>
+                  <li>
+                    <p>pincode</p><span>: {{order.address.pin_code}}</span>
+                  </li>
+            </ul>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="order_details_iner">
+            <h3>Order Details</h3>
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col" colspan="2">Product</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in order_items %}
+                  <tr>
+                    <td colspan="2"><span>{{ item.variant.product.products_name }}</span></td>
+                    <td>{{ item.quantity }}</td>
+                    <td><span>${{ item.price }}</span></td>
+                  </tr>
+                {% endfor %}
+                <tr>
+                  <td colspan="3">Subtotal</td>
+                  <td><span class="font-weight-bold text-dark">${{ order.total_price }}</span></td>
+                </tr>
+                {% comment %} <tr>
+                  <td colspan="3">Shipping</td>
+                  <td><span>Flat rate: $50.00</span></td>
+                </tr> {% endcomment %}
+              </tbody>
+              {% comment %} <tfoot>
+                <tr>
+                  <th scope="col" colspan="3">Quantity</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </tfoot> {% endcomment %}
+            </table>
+            <a href="{% url "invoice" %}">Download Invoice</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--================ confirmation part end =================-->
+  {% endblock %}

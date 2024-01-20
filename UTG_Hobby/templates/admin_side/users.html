@@ -1,0 +1,55 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Users{% endblock %}
+{% block content  %}
+
+
+  <main id="main" class="main">
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Users</h3>
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>    
+                <tbody>
+                  {% for user in users %}
+                  <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.phone_number }}</td>
+                    <td>{{ user.email }}</td>
+                    {% if user.is_listed %}
+                        <td>
+                            <a href="../../user_status/{{user.id}}"><button class="badge badge-danger" style="color:red;">Unlist</button></a>
+                        </td>
+                        {%else%}
+                        <td>
+                            <a href="../../user_status/{{user.id}}"><button class="badge badge-success" style="color:green;">List</button></a>
+                        </td>
+                        {%endif%}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}

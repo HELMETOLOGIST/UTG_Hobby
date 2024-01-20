@@ -1,0 +1,594 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Checkout{% endblock %}
+<link rel="stylesheet" href="{% static 'assets_home/css/tiny-slider.css' %}">
+<link rel="stylesheet" href="{% static 'assets_home/css/bootstrap.min.css' %}">
+
+{% block content %}
+
+<style>
+  .address-box {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+</style>
+
+<!--================ Home Banner Area =================-->
+<section class="breadcrumb breadcrumb_bg">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="breadcrumb_iner">
+          <div class="breadcrumb_iner_item">
+            <h2 class='text-warning'>Checkout</h2>
+            <p class='text-white'>Home <span>-</span> Checkout</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- breadcrumb end -->
+
+<!--================ Checkout Area =================-->
+<section class="checkout_area padding_top">
+    <div class="container">
+      <div class="billing_details">
+        <div class="row">
+          <!-- Address Section -->
+          <div class="col-lg-8">
+            <div class="col-md-12 mt-3 d-flex justify-content-between align-items-center">
+              <h4>Address</h4>
+              <a href="../add_address_checkout/">
+                <button class="btn btn-primary">Add Address</button>
+              </a>
+            </div>
+            
+            {% if not addresses %}
+            <tr>
+              <td colspan="5">
+                <div class="empty-cart-message">
+                  <center>
+                    <img src="https://media.discordapp.net/attachments/991705054828560496/1192433459231211540/pngwing.com_3.png?ex=65a90f33&is=65969a33&hm=d403925c433cb3f8574ed9c5842cd36be47784da447a7aa94b8914e1adc2e801&=&format=webp&quality=lossless&width=597&height=597"
+                      height="60px" class="my-3 opacity-100">
+                    <h2 class="cart-heading">No Address Here</h2>
+                    <p class="cart-subheading text-secondary">There are no addresses on your page.<br> Add an address here</p>
+                    <a href="{% url "add_address_checkout" %}"
+                      class="btn btn-warning rounded-0 shop-now-btn text-light fw-bold px-4 py-2">Add Address</a>
+                  </center>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            {% for user in addresses %}
+            <div class="address-box">
+            <form action="../order_succes/" method="POST">
+              {% csrf_token %}
+              <input type="radio" id="adsel" name="addreselect" id="address_{{user.id}}" value="{{user.id}}"
+              {% if forloop.counter == 1 %}{% endif %} required/>
+              
+                <div class="row">
+                  <div class="col-md-10">
+                    <p>Name: {{user.name}}</p>
+                    <p>Mobile: {{user.phone}}</p>
+                    <p>Address: {{user.street_address}}</p>
+                    <p>City: {{user.city}}</p>
+                    <p>State: {{user.state}}</p>
+                    <p>Pincode: {{user.pin_code}}</p>
+                  </div>
+                  <div class="col-md-4">
+                     <div class="d-flex ">
+                         <a href="../../edit_addresss/{{ user.id }}" class="btn btn-primary mb-1">Edit</a>
+                          {% comment %} <form method="get" action="../edit_addresss/{{ user.id }}"> {% endcomment %}
+                            <a  class="btn btn-danger mb-1 ms-1 btn-delete-address" data-address-id="{{ user.id }}">Delete</a>
+                            {% comment %} </form> {% endcomment %}
+                         </div>
+                      </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </form>
+                {% endif %}
+              </div>
+              
+          <!-- Order Summary Section -->
+          <div class="col-lg-4">
+            <div class="order_box">
+              <h2>Your Order</h2>
+              <ul class="list">
+                <li>
+                  <a href="#">Product
+                    <span>Total</span>
+                  </a>
+                </li>
+                {% for pro in cart_items %}
+                <li>
+                  <a href="#">{{pro.product.product.products_name}}
+                    <span class="middle text-center">x {{ pro.prod_quantity }}</span>
+                    <span class="last">${{pro.cart_price}}</span>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+              <ul class="list list_2">
+                <li>
+                  <a href="#">Subtotal
+                    <span>${{total}}</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">Shipping
+                    <span>Flat rate: $50.00</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" id="total1" class="total_price">Total
+                    <span>${{total}}</span>
+                  </a>
+                </li>
+              </ul>
+
+              <!-- Payment Section -->
+              
+              <div class="payment_item active">
+                <div class="radion_btn">
+                  <input type="radio" id="f-option6" name="payment_mode" value="cod" required/>
+                  <label for="f-option6">Cash on Delivery </label>
+                  <img src="{%static "assets_home/img/product/single-product/card.jpg" %}" alt="" />
+                  <div class="check"></div></div>
+                  <div class="radion_btn">
+                    <input type="radio" id="rzp-button1" name="payment_mode" value="razor" required/>
+                    <label for="rzp-button1">RazorPay </label>
+                    <img src="{%static "assets_home/img/product/single-product/card.jpg" %}" alt="" />
+                    <div class="check"></div></div>
+                    <div class="radion_btn">
+                      <input type="radio" id="f-option5" name="payment_mode" value="wallet" required/>
+                      <label for="f-option5">Wallet </label>
+                      <img src="{%static "assets_home/img/product/single-product/card.jpg" %}" alt="" />
+                      <div class="check"></div></div>
+                    </div>
+
+                    <p>
+                      Please send a check to Store Name, Store Street, Store Town, Store State / County, Store
+                      Postcode.
+                    </p>
+                  </div>
+                  <div class="creat_account">
+                    <input type="checkbox" id="f-option4" name="selector" required/>
+                    <label for="f-option4">I’ve read and accept the terms & conditions*</label>
+                  </div>
+                    <button type="button" id="placeOrderButton" class="btn_3">Place Order </button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</section>
+<!--================ End Checkout Area =================-->
+<!--RazorPay-->
+{% block scripts %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{% endblock scripts %}
+<script src="{% static "assets_home/js/checkout.js" %}"></script>
+<!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--\\  RazorPay integration Script //-->
+
+
+
+
+
+<!--\\  Place Order Cash on Delivery Script //-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  $(document).ready(function () {
+    var rzp1; // Define rzp1 outside the click event handler
+
+    $("#placeOrderButton").off("click").on("click", function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      console.log("Button Clicked!");
+
+      // Your existing code...
+      console.log("clicked");
+      var address = $("input[name=addreselect]:checked").val();
+      var total = $("#total1").text();
+      var payment = $("input[name=payment_mode]:checked").val();
+      var csrf_token = $("[name=csrfmiddlewaretoken]").val();
+      console.log('button clicked');
+      console.log(address, "address");
+
+      console.log('Before AJAX request');
+
+      // Check if the cart is empty before proceeding
+      checkCart(function (isCartEmpty) {
+        if (isCartEmpty) {
+          // Show a SweetAlert message indicating that the cart is empty
+          Swal.fire({
+            icon: 'warning',
+            title: 'Cart is Empty',
+            text: 'Please add items to your cart before placing an order.',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          // Cart is not empty, proceed with payment method check
+          handlePaymentMethod(payment, address, total, csrf_token);
+        }
+      });
+    });
+
+    function handlePaymentMethod(payment, address, total, csrf_token) {
+      
+      if (payment === 'cod') {
+        // Cash on delivery script...
+        $.ajax({
+          type: 'POST',
+          url: "../place_order/",
+          data: {
+            addreselect: address,
+            total: total,
+            payment_mode: payment,
+            csrfmiddlewaretoken: csrf_token,
+          },
+          success: function (response) {
+            console.log("entered");
+            if (response && response.success === true) {
+              console.log("order_succes");
+              // Use SweetAlert for success...
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Your order has been placed successfully',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = '/order_succes/';
+                }
+              });
+            } else {
+              // Use SweetAlert for error...
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message || 'Please Select Address',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+              });
+            }
+          },
+          error: function (error) {
+            console.error("AJAX request failed: ", error);
+            // Use SweetAlert for general error...
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred while processing your order',
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      } else if (payment === 'razor') {
+
+        // Razorpay script...
+        var options = {
+          "key": "rzp_test_uVOZmd57SunofW",
+          "amount": {{total}} * 100,
+          "currency": "INR",
+          "name": "UTG Hobby",
+          "description": "Online Transaction",
+          "image": "https://media.discordapp.net/attachments/991705054828560496/1185585752751480892/Clipped_image_20231120_182451-01.jpg?ex=65abd546&is=65996046&hm=d4b90657c57ec2b12897a4e4935deae0c5974dc5941048ad98e50a7fa168a4f6&=&format=webp&width=463&height=118",
+          "handler": function (response) {
+            var data = {
+              addreselect: address,
+              total: total,
+              payment_mode: payment,
+              csrfmiddlewaretoken: csrf_token,
+            };
+            $.ajax({
+              type: 'POST',
+              url: "/place_order/",
+              data: data,
+              success: function (responsec) {
+                if (responsec.success) {
+                  window.location.href = "/order_succes/";
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error processing your order: ' + responsec.message,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                  });
+                }
+              },
+              error: function (error) {
+                console.error("AJAX request failed: ", error);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'An error occurred while processing your order',
+                  confirmButtonColor: '#d33',
+                  confirmButtonText: 'OK'
+                });
+              }
+            });
+          },
+          "prefill": {
+            "name": "",
+            "email": "",
+            "contact": "",
+          },
+          "notes": {
+            "address": "RazorPay Corporate Office",
+          },
+          "theme": {
+            "color": "#F37254",
+          }
+        };
+        
+        rzp1 = new Razorpay(options);
+        
+        rzp1.on('payment.failed', function (response) {
+          alert(response.error.code);  
+        });
+        
+        rzp1.open();
+      }else if (payment === 'wallet') {
+        var data = {
+          addreselect: address,
+          total: total,
+          payment_mode: payment,
+          csrfmiddlewaretoken: csrf_token,
+        };
+        $.ajax({
+          type: 'POST',
+          url: '/place_order/',
+          data: data,
+          success: function (response) {
+            console.log('Response from server:', response);
+        
+            if (response.success) {
+              console.log('place_order');
+              window.location.href = '../order_succes/';
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Order Failed!',
+                text: 'Your order could not be placed.\n' + response.message,
+                confirmButtonText: 'OK',
+              });
+            }
+          },
+          error: function (error) {
+            console.error('AJAX request failed:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred while processing your order',
+              confirmButtonColor: '#d33',
+              confirmButtonText: 'OK',
+            });
+          }
+        });
+      }else{
+        // Handle other payment methods if needed
+        console.log('Unsupported payment method');
+        Swal.fire('Error', 'Please Choose Address and Payment Method', 'error');
+      }
+      console.log('After AJAX request');
+      }
+
+    // Function to check if the cart is empty asynchronously
+    function checkCart(callback) {
+      // Your implementation to check if the cart is empty...
+      // Example: Replace the following line with your actual implementation
+      var isCartEmpty = $("#cartItemCount").text() === '0';
+      callback(isCartEmpty);
+    }
+  });
+</script>
+       
+      
+
+
+
+
+
+
+
+{% comment %} <script>
+    $(document).ready(function() {
+        $("#placeOrderButton").off("click").on("click", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            console.log("Button Clicked!");
+
+            // Your existing code
+            console.log("clicked");
+            var address = $("input[name=addreselect]:checked").val();
+            var total = $("#total1").text();
+            var payment = $("input[name=payment_mode]:checked").val();
+            console.log('button clicked');
+            console.log(address, "address");
+            
+            console.log('Before AJAX request');
+            var options = {
+              "key": "rzp_test_uVOZmd57SunofW", // Enter the Key ID generated from the Dashboard
+              "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+              "currency": "INR",
+              "name": "Acme Corp", //your business name
+              "description": "Test Transaction",
+              "image": "https://example.com/your_logo",
+              "handler": function (response){
+                  
+              },
+              "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                  "name": "Gaurav Kumar", //your customer's name
+                  "email": "gaurav.kumar@example.com", 
+                  "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+              },
+              "notes": {
+                  "address": "Razorpay Corporate Office"
+              },
+              "theme": {
+                  "color": "#3399cc"
+              }
+          };
+          var rzp1 = new Razorpay(options);
+          rzp1.on('payment.failed', function (response){
+                  alert(response.error.code);
+                  alert(response.error.description);
+                  alert(response.error.source);
+                  alert(response.error.step);
+                  alert(response.error.reason);
+                  alert(response.error.metadata.order_id);
+                  alert(response.error.metadata.payment_id);
+          });
+            // Get the CSRF token
+            var csrf_token = $("[name=csrfmiddlewaretoken]").val();
+            if (payment==='razor'){
+
+              rzp1.open();
+              
+            }else{
+              $.ajax({
+                type: "POST",
+                url: "/place_order/",
+                data: {
+                    addreselect: address,
+                    total: total,
+                    payment_mode: payment,
+                    csrfmiddlewaretoken: csrf_token,
+                },
+                success: function(response) {
+                    console.log("entered");
+                    if (response && response.success === true) {
+                        console.log("order_succes");
+                        // Use SweetAlert for success
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Your order has been placed successfully',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/order_succes/';
+                            }
+                        });
+                    } else {
+                        // Use SweetAlert for error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message || 'Please Select Address',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(error) {
+                    console.error("AJAX request failed: ", error);
+                    // Use SweetAlert for general error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your order',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            }
+            // Send the data using jQuery AJAX
+            
+            console.log('After AJAX request');
+        });
+    });
+</script> {% endcomment %}
+
+
+
+
+
+<script>
+  $(document).ready(function() {
+    // Function to handle address deletion
+    function deleteAddress(addressId) {
+      // Get the CSRF token from the cookie
+      const csrftoken = getCookie('csrftoken');
+
+      $.ajax({
+        type: 'POST',
+        url: '{% url "delete_address_user" id=0 %}'.replace('0', addressId),
+        dataType: 'json',
+        headers: {'X-CSRFToken': csrftoken},  // Include the CSRF token in the headers
+        success: function(response) {
+          if (response.status === 'Deleted Successfully') {
+            // Reload the page or update the UI as needed
+            location.reload();  // You can also remove the deleted address from the UI without a page reload
+          } else {
+            // Handle error or show a different message
+            Swal.fire('Error', 'Failed to delete address', 'error');
+          }
+        },
+        error: function(error) {
+          console.log(error);
+          Swal.fire('Error', 'An error occurred', 'error');
+        }
+      });
+    }
+
+    // Event listener for delete button click
+    $('.btn-delete-address').click(function(e) {
+      e.preventDefault();
+      var addressId = $(this).data('address-id');
+
+      // Show a confirmation dialog before deletion
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If the user confirms, proceed with deletion
+          deleteAddress(addressId);
+        }
+      });
+    });
+
+    // Function to get CSRF token from the cookie
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+</script>
+
+{% endblock %}

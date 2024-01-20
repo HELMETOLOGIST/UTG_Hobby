@@ -1,0 +1,89 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Add Category{% endblock %}
+{% block content  %}
+
+  <main id="main" class="main">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Add Category</h5>
+
+              <!-- Vertical Form -->
+              <form class="row g-3" id="categoryForm  " action="{% url "add_category" %}" method="POST" >
+                {% csrf_token %}
+                <div class="col-12">
+                  <label for="inputNanme4" class="form-label">Category Name</label>
+                  <input type="text" class="form-control" id="inputNanme4" name="category_name">
+                  <span class="error-message" id="name-error"></span>
+                    {% if messages %}<span class="error text-danger">{% for message in messages %}{{message}}{% endfor %}</span>{% endif %}
+                </div>
+                {% if messages %}
+                <div class=" alert text-danger" id='alert-message' >  
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                </div>
+                {% endif %}
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+              </form><!-- Vertical Form -->
+            </div>
+            </div>
+          </div>   
+  </main><!-- End #main -->
+  <script>
+    function hideAlert() {
+        var alertMessage = document.getElementById('alert-message');
+        if (alertMessage) {
+            setTimeout(function() {
+                alertMessage.style.display = 'none';
+            }, 2000); 
+        }
+    }
+    window.onload = hideAlert;
+</script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<!-- ======= Validation ======= -->
+<script>
+  $(document).ready(function() {
+    $("#categoryForm").validate({
+      rules: {
+        category_name: {
+          required: true,
+          minlength: 2,
+          alphabeticOnly: true,
+          noConsecutiveSpaces: true
+        },
+      },
+      messages: {
+        name: {
+          required: "Please enter the category name",
+          minlength: "Category name must be at least 2 characters long",
+          alphabeticOnly: "Category name should only contain alphabetic characters",
+          noConsecutiveSpaces: "Category name cannot contain more than 2 consecutive spaces"
+        },
+      },
+      errorClass: "is-invalid",
+      errorPlacement: function(error, element) {
+        error.addClass("invalid-feedback");
+        error.insertAfter(element);
+      }
+    });
+
+    // Custom validation methods
+    $.validator.addMethod("alphabeticOnly", function(value, element) {
+      return /^[A-Za-z]+$/.test(value);
+    }, "Category name should only contain alphabetic characters");
+
+    $.validator.addMethod("noConsecutiveSpaces", function(value, element) {
+      return !/\s{2,}/.test(value);
+    }, "Category name cannot contain more than 2 consecutive spaces");
+  });
+</script>
+<!-- ======= tEnd Validation ======= -->
+  {% endblock %}
+
+ 

@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<style>
+    .img-wrap {
+        position: relative;
+      }
+      
+      .img-wrap img {
+        display: block;
+        max-width: 100%;
+        height: 600px;
+        width:400px;
+        border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the values for the shadow effect */
+      }
+</style>
+    
+<div id="carouselExampleCaptions" class="carousel slide mt-5" data-bs-ride="carousel" style="margin-top: 700px;">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{% static "assets_home/img/b3.jpeg" %}" class="d-block w-100 img-fluid" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 class="fw-bolder fs-1">Christmas offer</h5>
+                <p class="text-dark">Incididunt ut labore et dolore magna aliqua quis ipsum suspendisse ultrices gravida. Risus commodo viverra</p>
+                <a href="#" class="btn_3">buy now</a>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+    <!-- banner part start-->
+
+<!-- Start Why Choose Us Section -->
+<div class="why-choose-section">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-6">
+                <h2 class="section-title">Why Choose Us</h2>
+                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+
+                <div class="row my-5">
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="{% static "assets_home/img/truck.svg" alt="Image" %}" class="imf-fluid">
+                            </div>
+                            <h3>Fast &amp; Free Shipping</h3>
+                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="{% static "assets_home/img/bag.svg" alt="Image" %}" class="imf-fluid">
+                            </div>
+                            <h3>Easy to Shop</h3>
+                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="{% static "assets_home/img/support.svg" %}" alt="Image" class="imf-fluid">
+                            </div>
+                            <h3>24/7 Support</h3>
+                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-6">
+                        <div class="feature">
+                            <div class="icon">
+                                <img src="{% static "assets_home/img/return.svg" %}" alt="Image" class="imf-fluid">
+                            </div>
+                            <h3>Hassle Free Returns</h3>
+                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="img-wrap">
+                    <img src="{% static "assets_home/img/pea.jpg" %}" alt="Image" class="img-fluid">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End Why Choose Us Section -->
+
+<!-- feature_part start-->
+
+<section class="product_list section_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="section_tittle text-center">
+                    <h2>Featured <span>shop</span></h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product_list_slider owl-carousel">
+                    <div class="single_product_list_slider">
+                        <div class="row align-items-center justify-content-between">
+                            {% for var in homeVariant|slice:":8" %}
+                            <div class="col-lg-3 col-sm-6 product_data">
+                                <div class="single_product_item border">
+                                    <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt=""/></a>
+                                    <div class="single_product_text">
+                                        <h4> {{ var.product.products_name }}</h4>
+                                        <p> Brand: {{ var.product.brand_id.name }}</p>
+                                        <p> Color: {{ var.color }}</p1>
+                                        <h3> ${{ var.price }}</h3>
+                                        {% csrf_token %}
+                                        <input type="hidden" id="product-id" value="{{var.id}}" class="prod_id">
+                                        {% if var.quantity > 0 %}
+                                        <a class="add_cart"><button type="button" id="add_cart" class="btn border-0 text-danger fw-bolder">+ ADD TO CART</button><i class="ti-heart"></i></a>
+                                        {% else %}
+                                        <a class="text-danger">OUT OF STOCK</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- feature_part end-->
+
+    <!-- upcoming_event part start-->
+
+    <!-- awesome_shop start-->
+    <section class="our_offer section_padding">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-lg-6 col-md-6">
+                    <div class="offer_img">
+                        <img src="{% static "assets_login/img/drone.png" %}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="offer_text">
+                        <h2>Weekly Sale on
+                            60% Off All Products</h2>
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-6 col-md-8 col-sm-10">
+                                        <div class="date_countdown text-center">
+                                            <div id="timer" class="d-flex justify-content-center">
+                                                <div id="days" class="date"></div>
+                                                <div id="hours" class="date"></div>
+                                                <div id="minutes" class="date"></div>
+                                                <div id="seconds" class="date"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="enter email address"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <a href="#" class="input-group-text btn_2" id="basic-addon2">book now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- awesome_shop part start-->
+
+    {% comment %} <!-- product_list part start-->
+    <section class="product_list best_seller section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="section_tittle text-center">
+                        <h2>Best Sellers <span>category</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center justify-content-between">
+                <div class="col-lg-12">
+                    <div class="best_product_slider owl-carousel">
+                        {% for var in homeVariant %}
+                        <div class="single_product_item">
+                            <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt="" /></a>
+                            <div class="single_product_text">
+                                <h4>{{var.product.category_id.name}}</h4>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- product_list part end--> {% endcomment %}
+
+    <!-- Start Testimonial Slider -->
+		<div class="testimonial-section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-7 mx-auto text-center">
+						<h2 class="section-title">Testimonials</h2>
+					</div>
+				</div>
+
+				<div class="row justify-content-center">
+					<div class="col-lg-12">
+						<div class="testimonial-slider-wrap text-center">
+
+							<div id="testimonial-nav">
+								<span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+								<span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+							</div>
+
+							<div class="testimonial-slider">
+								
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+												</blockquote>
+												<div class="author-info">
+													<div class="author-pic">
+														<img src="{% static "assets_home/img/person-1.png" %}" alt="Maria Jones" class="img-fluid">
+													</div>
+													<h3 class="font-weight-bold">Maria Jones</h3>
+													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Testimonial Slider -->
+
+    <!-- subscribe_area part start-->
+    <section class="subscribe_area section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="subscribe_area_text text-center">
+                        <h5>Join Our Newsletter</h5>
+                        <h2>Subscribe to get Updated
+                            with new offers</h2>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="enter email address"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <a href="#" class="input-group-text btn_2" id="basic-addon2">subscribe now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--::subscribe_area part end::-->
+
+    <!-- subscribe_area part start-->
+    <section class="client_logo padding_top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_1.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_2.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_3.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_4.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_5.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_3.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_1.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_2.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_3.png" %}" alt="">
+                    </div>
+                    <div class="single_client_logo">
+                        <img src="{% static "assets_home/img/client_logo/client_logo_4.png" %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--::subscribe_area part end::-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('.add_cart').click(function (e) {
+                e.preventDefault();
+    
+                // Update this line to use the correct class selector
+                var product_id = $(this).closest('.product_data').find('.prod_id').val();
+    
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+    
+                $.ajax({
+                    method: "POST",
+                    url: "/addcart/",
+                    data: {
+                        'product_id': product_id,
+                        csrfmiddlewaretoken: token
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+    
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Item Added to Cart',
+                                text: 'Your item has been added to the cart.',
+                                icon: 'success',
+                            });
+                            $('#cart-count-badge').text(response.cart_count);
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Already in cart',
+                                icon: 'error',
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error:", error);
+                    }
+                });
+            });
+        });
+    </script> 
+
+    {% endblock %}

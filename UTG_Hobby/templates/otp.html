@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static%}
+{% block title  %}OTP{% endblock  %}
+
+{% block content %}
+    <!--================login_part Area =================-->
+    <section class="login_part padding_top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_text text-center">
+                        <div class="login_part_text_iner">
+                            <h2>OTP</h2>
+                            <p>There are advances being made in science and technology
+                                everyday, and a good example of this is the</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_form">
+                        <div class="login_part_form_iner">
+                            <h3><br>
+                                OTP Verification</h3>
+                                <form class="row contact_form" action="{% url "otp" %}" method="POST">
+                                {% csrf_token %}
+                                    <!-- OTP-related fields -->
+                                    <div class="col-md-12 form-group">
+                                        <!-- Button to resend OTP -->
+                                        {% comment %} <button type="button" onclick="resendOTP()">Resend OTP</button> {% endcomment %}
+                                        <!-- OTP input field -->
+                                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP">
+                                        <!-- OTP timer display -->
+                                        <a id="otp-timer">01:00</a>
+                                        <!-- Link to reset password if needed -->
+                                        {% comment %} <a id="resend-link" class="lost_pass" href="{% url "resend_otp" %}" >Resend OTP</a> {% endcomment %}
+                                        <a id="resend-link" class="lost_pass" href="{% url "resend_otp" %}">Resend OTP</a>
+                                        {% if messages %}
+                                        <div class=" alert text-danger" id='alert-message' >  
+                                        {% for message in messages %}
+                                        {{ message }}
+                                        {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <!-- Submit button -->
+                                        <button type="submit" value="submit" class="btn_3">Submit OTP</button>
+                                    </div>
+                                </form>
+                                
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!--Alert message-->
+    <script>
+        
+        function hideAlert() {
+            var alertMessage = document.getElementById('alert-message');
+            if (alertMessage) {
+                setTimeout(function() {
+                    alertMessage.style.display = 'none';
+                }, 2000); 
+            }
+        }
+        
+        window.onload = hideAlert;
+    </script>
+
+
+    <!--OTP Area-->
+
+    <script>
+        // Your countdown timer logic
+         var intervalId;
+
+        function startTimer() {
+            var seconds = localStorage.getItem('otpTimer') || 60;
+            intervalId = setInterval(function() {
+                // Update the countdown element
+                var minutes = Math.floor(seconds / 60);
+                var remainingSeconds = seconds % 60;
+
+                $('#otp-timer').text(String(minutes).padStart(2, '0') + ':' + String(remainingSeconds).padStart(2, '0'));
+
+                // Check if the timer has reached 0
+                if (seconds === 0) {
+                    clearInterval(intervalId);  // Stop the timer
+
+                    // Show the Resend OTP link
+                    $('#resend-link').show();
+                    $('#resend-link').removeClass('disabled');
+
+                    // Disable the submit button
+                    $('button[value="submit"]').prop('disabled', true);
+                    // Remove the timer value from localStorage
+                    localStorage.removeItem('otpTimer');
+                } else {
+                    localStorage.setItem('otpTimer', seconds);
+                    $('#resend-link').addClass('disabled');
+                    $('#resend-link').hide();
+                    
+
+                    seconds--;  // Decrement the timer if not yet at 0
+            }
+        }, 1000);
+    }
+
+// Call startTimer function when the page loads
+$(document).ready(function() {
+    startTimer();
+}); 
+
+
+
+
+// Function to resend OTP
+function resendOTP(event) {
+    event.preventDefault();
+
+    // Assuming you have a URL for resending OTP
+    var resendUrl = '{% url "resend_otp" %}';
+
+    // Make an AJAX request to resend OTP
+    $.ajax({
+        type: 'POST',
+        url: resendUrl,
+        dataType: 'json',
+        success: function(response) {
+            // Check if the server successfully resends OTP
+            if (response.status === 'success') {
+                // Reset the timer and hide the Resend OTP link
+                localStorage.setItem('otpTimer', 60);
+                $('#otp-timer').show();
+                $('#resend-link').hide();
+
+                // Disable the submit button again until the timer reaches 0
+                $('button[value="submit"]').prop('disabled', true);
+
+                // Restart the timer
+                startTimer();
+            } 
+
+
+            else {
+                // Handle error response from the server
+                console.error('Failed to resend OTP');
+                // Optionally, you can display an error message to the user
+            }
+        },
+        error: function(xhr, status, error) {
+            // Handle AJAX error
+            console.error('AJAX error:', status, error);
+            // Optionally, you can display an error message to the user
+        }
+    });
+}
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    {% endblock %}
+    <!--================login_part end =================-->
+ 

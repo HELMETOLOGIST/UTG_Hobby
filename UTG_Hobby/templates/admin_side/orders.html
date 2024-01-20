@@ -1,0 +1,52 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Orders{% endblock %}
+{% block content  %}
+
+
+  <main id="main" class="main">
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Orders</h3>
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">ORDER ID</th>
+                    <th scope="col">IMAGE</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">USER</th>
+                    <th scope="col">MODE</th>
+                    <th scope="col">VIEW</th>
+                    <th scope="col">STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for pro in order_items %}
+                  <tr>
+                    <th scope="row">{{pro.order_id}}</th>
+                    <td><center><img src="{{pro.variant.images.all.last.image.url}}" height="50px"/><center></td>
+                    <td>{{pro.variant.product.products_name}}</td>
+                    <td class="text-uppercase font-weight-bold">{{pro.order.address.name}}</td>
+                    <td class="text-uppercase font-weight-bold">{{pro.order.payment_mode}}</td> 
+                    <td class=""><a href="{% url 'order_view' order_id=pro.order.order_id id=pro.id %}" class="btn btn-outline-dark">View</a></td>
+                    <td>{{pro.status}}</td> 
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}

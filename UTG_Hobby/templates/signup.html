@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Signup{% endblock %}
+
+
+{% block content %}
+    <!--================signup_part Area =================-->
+    <section class="login_part padding_top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_text text-center">
+                        <div class="login_part_text_iner">
+                            <h2>New to our Shop?</h2>
+                            <p>There are advances being made in science and technology
+                                everyday, and a good example of this is the</p>
+                            <a href="{% url "login" %}" class="btn_3">LogIn</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="login_part_form">
+                        <div class="login_part_form_iner">
+                            <h3>Welcome Back ! <br>
+                                Please Sign Up now</h3>
+                                <form id="form" class="row contact_form" action="{% url "signup" %}" method="POST" id="form" onsubmit="return validateForm()">
+                                    {% csrf_token %}
+                                    <div class="col-md-6 form-group p_star">
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="" placeholder="First Name" required/>
+                                        <span id="first-name-error" class="error-message text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 form-group p_star">
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="" placeholder="Last Name" required/>
+                                        <span id="last-name-error" class="error-message text-danger"></span>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="email" class="form-control" id="email" name="email" value="" placeholder="Email" required/>
+                                        <span id="email-error" class="error-message text-danger"></span>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="tel" class="form-control" pattern="[0-9]{10}" id="phone" name="phone" value="" placeholder="Phone" required/>
+                                        <span id="phone-error" class="error-message text-danger"></span>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" required/>
+                                        <span id="password-error" class="error-message text-danger"></span>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" value="" placeholder="Confirm Password" required/>
+                                        <span id="confirm_password-error" class="error-message text-danger"></span>
+                                    </div>
+                                    {% if messages %}
+                                        <div class="alert text-danger" id='alert-message'>
+                                            {% for message in messages %}
+                                                {{ message }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-md-12 form-group">
+                                        <button type="submit" value="submit" class="btn_3">SignUp</button>
+                                    </div>                                        
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% comment %} validation {% endcomment %}
+
+<script>
+    function hideAlert() {
+      var alertMessage = document.getElementById('alert-message');
+      if (alertMessage) {
+          setTimeout(function() {
+              alertMessage.style.display = 'none';
+          }, 2000); 
+      }
+  }
+  window.onload = hideAlert;
+  </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#form').submit(function (e) {
+            e.preventDefault();
+            $('.error-message').html(''); // Clear error messages
+
+            var firstName = $('#first_name').val();
+            var lastName = $('#last_name').val();
+            var email = $('#email').val();
+            var phone = $('#phone').val();
+            var password = $('#password').val();
+            var confirmPassword = $('#confirm_password').val();
+            var isValid = true;
+
+            // Validate First Name
+            if (!isValidFirstName(firstName)) {
+                isValid = false;
+                showErrorAlert('Please enter a valid first name.');
+            }
+
+            // Validate Last Name
+            if (!isValidLastName(lastName)) {
+                isValid = false;
+                showErrorAlert('Please enter a valid last name.');
+            }
+
+            // Validate Email
+            if (!isValidEmail(email)) {
+                isValid = false;
+                showErrorAlert('Please enter a valid email address.');
+            }
+
+            // Validate Phone
+            if (!isValidPhone(phone)) {
+                isValid = false;
+                showErrorAlert('Please enter a valid phone number.');
+            }
+
+            // Validate Password
+            if (!isValidPassword(password)) {
+                isValid = false;
+                showErrorAlert('Please enter a valid password.');
+            }
+
+            // Validate Confirm Password
+            if (!isValidConfirmPassword(password, confirmPassword)) {
+                isValid = false;
+                showErrorAlert('Passwords do not match.');
+            }
+
+            if (isValid) {
+                // Form is valid, you can submit the data or take further actions here
+                $('#form')[0].submit();
+            }
+        });
+
+        function isValidFirstName(name) {
+            return /^[a-zA-Z]+(?:\s+[a-zA-Z]+)*$/.test(name); // Alphabets with optional spaces
+        }
+
+        function isValidLastName(name) {
+            return /^[a-zA-Z]+(?:\s+[a-zA-Z]+)*$/.test(name); // Alphabets with optional spaces
+        }
+
+        function isValidEmail(email) {
+            return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email); // Basic email format check
+        }
+
+        function isValidPhone(phone) {
+            return /^(?:(\d)(?!\1{9})){10}$/.test(phone); // 10 digits only
+        }
+
+        function isValidPassword(password) {
+            // Password must have at least one uppercase letter, one lowercase letter, one digit, one symbol, and be 8 characters long
+            return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+        }
+
+        function isValidConfirmPassword(password, confirmPassword) {
+            return password === confirmPassword;
+        }
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: message,
+            });
+        }
+    });
+</script>
+
+    {% endblock %}
+    <!--================signup_part end =================-->
+
+    

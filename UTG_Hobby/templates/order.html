@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Orders{% endblock %}
+
+
+<style>
+  .disabled-link {
+    pointer-events: none;
+    opacity: 0.5; /* You can adjust the opacity to visually indicate the link is disabled */
+  }
+</style>
+
+{% block content %}
+
+
+<section class="h-100 gradient-custom mt-5">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-10 col-xl-8">
+          <div class="card" style="border-radius: 10px;">
+            <div class="card-header px-4 py-5">
+              <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #a8729a;">{{order.address.name}}</span>!</h5>
+            </div>
+            <div class="card-body p-4">
+              {% comment %} <div class="d-flex justify-content-between align-items-center mb-4">
+                <p class="lead fw-normal mb-0" style="color: #a8729a;">Receipt</p>
+                <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p>
+              </div> {% endcomment %}
+
+              {% for order in order_items %}
+              <div class="card shadow-0 border mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <img src="{{order.variant.images.all.last.image.url}}"
+                        class="img-fluid" alt="img">
+                    </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0">{{order.variant.product.products_name}}</p>
+                    </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0 small">{{order.variant.color}}</p>
+                    </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0 small">{{order.variant.product.brand_id.name}}</p>
+                    </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0 small">Qty: {{order.quantity}}</p>
+                    </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0 small">${{order.price}}</p>
+                    </div>
+                  </div>
+                  <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                  <div class="row d-flex align-items-center">
+                    <div class="col-md-3">
+                      <p class="text-muted mb-5">Order Status:</p>
+                    </div>
+                    <div class="col-md-5">
+                      <p class="text-primary mt-0 mb-0 small ms-xl-0">{{order.status}}</p>
+                      {% if order.status == 'Order Confirmed' %}
+                      <a class="btn_3 ml-5 mr-3 d-flex align-items-center cancel-order-btn" href="../../cancel_order/{{order.id}}">Cancel Order</a>
+                      {% else %}
+                      <a class="btn_3 ml-5 mr-5 d-flex align-items-center disabled-link">Canceled</a>
+                      {% endif %}
+
+                      <div class="d-flex justify-content-around mb-1 mr-5">
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              
+              <div class="d-flex justify-content-between pt-2">
+                <p class="fw-bold mb-0">Order Details</p>
+                <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ${{order.total_price}}</p>
+              </div>
+  
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0">{{order.address.street_address}}</p>
+              </div>
+  
+              <div class="d-flex justify-content-between">
+                <p class="text-muted mb-0">{{order.address.city}}, {{order.address.state}}</p>
+              </div>
+  
+              <div class="d-flex justify-content-between mb-5">
+                <p class="text-muted mb-0">{{order.address.pin_code}}</p>
+                <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
+              </div>
+            </div>
+            <a href="../../user_invoice/{{ order.order_id }}">Download Invoice</a>
+            <div class="card-footer border-0 px-4 py-5"
+              style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+              <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+                paid: <span class="h2 mb-0 ms-2">${{order.total_price}}</span></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+$(document).ready(function() {
+    // Add an event listener to the cancel order button
+    $('.cancel-order-btn').click(function(e) {
+        e.preventDefault(); // Prevent the default link behavior
+
+        // Show a confirmation dialog before cancellation
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, proceed with cancellation
+                window.location.href = $(this).attr('href');
+            }
+        });
+    });
+});
+</script>
+  {% endblock %}

@@ -1,0 +1,43 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Add Variants{% endblock %}
+{% block content  %}
+
+<main id="main" class="main">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+              <h5 class="card-title">Add Variants</h5>
+
+              <!-- No Labels Form -->
+                <form class="row g-3" id="variantForm" enctype="multipart/form-data" method="POST" action="{% url 'add_variants' id=product.id %}">
+                {% csrf_token %}
+                <div class="col-md-12">
+                  <input type="text" class="form-control" placeholder="Product Name" name="product_name" value="{{product.products_name}}" disabled>
+                </div>
+                <div class="col-12">
+                  <input type="text" class="form-control" placeholder="Color" name="color">
+                </div>
+                <div class="col-12">
+                  <input type="number" class="form-control" placeholder="Price" name="price">
+                </div>
+                <div class="col-12">
+                  <input type="number" class="form-control" placeholder="Stock" name="quantity">
+                </div>
+                <div class="col-10">
+                  <div class="row mb-3">
+                    <div class="col-sm-10 col-md-4">
+                        <input class="form-control" type="file" id="formFile" name="images" multiple>
+                        <span class="error-message text-danger mt-2" id="images-error"></span>
+                    </div>
+                </div>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form><!-- End No Labels Form -->
+
+            </div>
+          </div>
+        </div>
+          {% endblock %}

@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+
+<style>
+  .product_count {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd; /* Border color */
+      border-radius: 5px; /* Rounded corners */
+      overflow: hidden; /* Hide overflowing content */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift */
+  }
+
+  .product_count span {
+      cursor: pointer;
+      padding: 10px;
+      background-color: #fff; /* Background color of buttons */
+  }
+
+  .product_count .num {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 10px;
+  }
+</style>
+
+
+
+  <!--================Home Banner Area =================-->
+  <!-- breadcrumb start-->
+  <section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="breadcrumb_iner">
+            <div class="breadcrumb_iner_item">
+              <h2 class='text-warning'>Cart Products</h2>
+              <p class='text-white'>Home <span>-</span>Cart Products</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- breadcrumb start-->
+
+  <!--================Cart Area =================-->
+
+  <section class="cart_area padding_top">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <form method="POST">
+                    {% csrf_token %}
+                    <table class="table">
+                      {% if not cart_items %}
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-cart-message">
+                                            <center>
+                                                <img src="https://cdn.discordapp.com/attachments/991705054828560496/1189857172230778961/icons8-shopping-cart.gif?ex=659fafd8&is=658d3ad8&hm=64244af69f28535d7bf55dd1e755685b05c50eb9122d17af19757dbd441016b9&" height="60px" class="my-3 opacity-100">    
+                                                <h2 class="cart-heading">Your Cart is Empty</h2>
+                                                <p class="cart-subheading text-secondary">There are no items in your cart.
+                                                    <br> Add items to the cart</p>
+                                                <a href="{% url "shop" %}"
+                                                    class="btn btn-warning rounded-0 shop-now-btn text-light fw-bold px-4 py-2">SHOP
+                                                    NOW</a>
+                                            </center>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                        <thead>
+                            <tr>
+                                <th scope="col">Image</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Remove</th>
+                                <th scope="col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                {% for item in cart_items %}
+                                    <tr>
+                                        <td>
+                                            <div class="media product_data">
+                                                <div class="d-flex">
+                                                    <img src="{{item.product.images.last.image.url}}" alt="" height="100px" />
+                                                </div>
+                                                <div class="media-body ">
+                                                  <td>
+                                                    <p class="">{{item.product.product.products_name}}</p>
+                                                  </td>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5>${{item.product.price}}</h5>
+                                        </td>
+                                        
+                                        {% if item.product.quantity >= 0 %}
+                                          <td>
+                                            <div class="product_count">
+                                              <span class="minus" onclick="cartQuantity(-1, '{{ item.product.id }}', '{{ item.prod_quantity }}')">-</span>
+                                              <span class="num-{{item.product.id}}">{{ item.prod_quantity }}</span>
+                                              <span class="plus" onclick="cartQuantity(1, '{{ item.product.id }}', '{{ item.prod_quantity }}')">+</span>
+                                              </div>
+                                          </td>
+
+                                          <td class="align-middle">
+                                            <button type="button" class="btn btn-outline-dark btn-remove" onclick="confirmDelete(this)" data-item-id="{{ item.id }}">Remove</button>
+                                          </td>
+                                        {% else %} 
+                                          <h6 class="btn btn-danger m-0">Out of stock</h6>
+                                          <button type="button" class="btn btn-outline-dark btn-remove" onclick="confirmDelete(this)" data-item-id="{{ item.id }}">Remove</button>
+                                        {% endif %}
+                                        <td>
+                                          <h5 class="variant_total_price{{ item.product.id }}">$ {{ item.cart_price }}</h5>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <h5>Subtotal</h5>
+                                    </td>
+                                    <td>
+                                        <h5 class="total_price">$ {{ total }}</h5>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </form>
+                <div class="checkout_btn_inner float-right">
+                    <a class="btn_1" href="{% url "shop" %}">Continue Shopping</a>
+                    {% if cart_items %}
+                    <a class="btn_1 checkout_btn_1" href="{% url "checkout" %}">Proceed to checkout</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<script>
+  function getCSRFToken() {
+      return document.querySelector('input[name=csrfmiddlewaretoken]').value;
+  }
+
+  function cartQuantity(change, variantId, quantity) {
+      console.log("Change: " + change);
+      console.log("Variant ID: " + variantId);
+      console.log("Quantity: " + quantity);
+
+      console.log('button clicked')
+      
+
+      $.ajax({
+          type: "POST",
+          url: '/update_cart/', 
+          data: {
+              change: change,
+              variantId: variantId,
+              quantity: quantity
+          },
+          headers: {
+              'X-CSRFToken': getCSRFToken()
+          },
+          success: function (data) {
+            console.log("Success:", data);
+
+                // Update displayed quantity and total price
+              $(`.num-${variantId}`).text(data.updatedQuantity);
+              flag=0
+              if (data.variant_cont <= data.updatedQuantity){
+                flag=1
+              }else{
+                flag=0
+
+              }
+              if (flag===1){
+                Swal.fire ({
+                  icon: 'error',
+                  title: 'Out of Stock!',
+                  text: `This product is out of stock.`
+                });
+              }
+            $(`.variant_total_price${variantId}`).text('$' + data.prodtotal);
+            $('.total_price').text('$' + data.total); 
+            if (data.variant_cont < data.updatedQuantity){
+              $(`.num-${variantId}`).text(data.updatedQuantity);
+            }
+            
+          },
+          error: function (error) {
+            console.error('Error:', error);
+          }
+      });
+    }
+</script>
+
+
+
+<script>
+  function confirmDelete(button) {
+    const itemId = button.getAttribute('data-item-id');
+    
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#1d4289',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // User confirmed the deletion, proceed with the AJAX request to remove the item
+        $.ajax({
+          type: 'POST',
+          url: '../remove_item_from_cart/',
+          data: {
+            item_id: itemId,
+            csrfmiddlewaretoken: getCookie('csrftoken')
+          },
+          success: function(data) {
+            console.log('Item removed successfully.');
+            location.reload(); // Reload the page
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error removing item:', errorThrown);
+          }
+        });
+      }
+    });
+  }
+
+  // Function to get the CSRF token from cookies
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+</script>
+
+  <!--================End Cart Area =================-->
+
+ {% endblock %}

@@ -1,0 +1,94 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Edit Brands{% endblock %}
+{% block content  %}
+
+<main id="main" class="main">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Edit Brands</h5>
+
+        <!-- Vertical Form -->
+        <!-- Vertical Form -->
+        <form id="editBrandForm" class="row g-3" action="../../edit_brands/{{brand.id}}" method="POST">
+        {% csrf_token %}
+        <div class="col-12">
+          <label for="inputName4" class="form-label">Brand Name</label>
+        <input type="text" class="form-control" id="inputName4" name="edit_brands" value="{{brand.name}}">
+       </div>
+     {% if messages %}
+    <div class="alert text-danger" id='alert-message'>
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary">Add</button>
+  </div>
+</form><!-- Vertical Form -->
+<!-- Vertical Form -->
+      </div>
+    </div>
+  </div>
+</main><!-- End #main -->
+
+<script>
+  function hideAlert() {
+    var alertMessage = document.getElementById('alert-message');
+    if (alertMessage) {
+      setTimeout(function () {
+        alertMessage.style.display = 'none';
+      }, 2000);
+    }
+  }
+  window.onload = hideAlert;
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#editBrandForm").validate({
+      rules: {
+        edit_brands: {
+          required: true,
+          minlength: 2,
+          noConsecutiveSpaces: true,
+          customBrandName: true
+        },
+      },
+      messages: {
+        edit_brands: {
+          required: "Please enter the brand name",
+          minlength: "Brand name must be at least 2 characters long",
+          noConsecutiveSpaces: "Brand name cannot contain more than 2 consecutive spaces",
+          customBrandName: "Brand name must contain at least 3 letters and cannot have 2 consecutive spaces"
+        },
+      },
+      errorClass: "is-invalid",
+      errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        error.insertAfter(element);
+      }
+    });
+
+    // Custom validation method
+    $.validator.addMethod("noConsecutiveSpaces", function (value, element) {
+      return !/\s{2,}/.test(value);
+    }, "Brand name cannot contain more than 2 consecutive spaces");
+
+    // Custom validation method for brand name
+    $.validator.addMethod("customBrandName", function (value, element) {
+      var brandNameRegex = /^[A-Za-z\s]{3,}$/;
+      return brandNameRegex.test(value);
+    }, "Brand name must contain at least 3 letters and cannot have 2 consecutive spaces");
+  });
+</script>
+
+{% endblock %}
+
+

@@ -1,0 +1,649 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+<style>
+  .my-account .row [class^="col-"] {
+    margin-bottom: 15px;
+  }
+
+  #address-tab .col-md-6 {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  body{
+    background: #f5f5f5;
+    margin-top:20px;
+}
+
+.ui-w-80 {
+    width: 80px !important;
+    height: auto;
+}
+
+.btn-default {
+    border-color: rgba(24,28,33,0.1);
+    background: rgba(0,0,0,0);
+    color: #4E5155;
+}
+
+label.btn {
+    margin-bottom: 0;
+}
+
+.btn-outline-primary {
+    border-color: #26B4FF;
+    background: transparent;
+    color: #26B4FF;
+}
+
+.btn {
+    cursor: pointer;
+}
+
+.text-light {
+    color: #babbbc !important;
+}
+
+.btn-facebook {
+    border-color: rgba(0,0,0,0);
+    background: #3B5998;
+    color: #fff;
+}
+
+.btn-instagram {
+    border-color: rgba(0,0,0,0);
+    background: #000;
+    color: #fff;
+}
+
+.card {
+    background-clip: padding-box;
+    box-shadow: 0 1px 4px rgba(24,28,33,0.012);
+}
+
+.row-bordered {
+    overflow: hidden;
+}
+
+.account-settings-fileinput {
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+.account-settings-links .list-group-item.active {
+    font-weight: bold !important;
+}
+html:not(.dark-style) .account-settings-links .list-group-item.active {
+    background: transparent !important;
+}
+.account-settings-multiselect ~ .select2-container {
+    width: 100% !important;
+}
+.light-style .account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(24, 28, 33, 0.03) !important;
+}
+.light-style .account-settings-links .list-group-item.active {
+    color: #4e5155 !important;
+}
+.material-style .account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(24, 28, 33, 0.03) !important;
+}
+.material-style .account-settings-links .list-group-item.active {
+    color: #4e5155 !important;
+}
+.dark-style .account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(255, 255, 255, 0.03) !important;
+}
+.dark-style .account-settings-links .list-group-item.active {
+    color: #fff !important;
+}
+.light-style .account-settings-links .list-group-item.active {
+    color: #4E5155 !important;
+}
+.light-style .account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(24,28,33,0.03) !important;
+}
+
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<!--================Home Banner Area =================-->
+<section class="breadcrumb breadcrumb_bg">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="breadcrumb_iner">
+          <div class="breadcrumb_iner_item">
+            <h2 class='text-warning'>My Account</h2>
+            <p class='text-white'>Home <span>-</span> My Account</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="container light-style flex-grow-1 container-p-y">
+  {% comment %} <h4 class="font-weight-bold py-3 mb-4">
+    Account settings
+  </h4> {% endcomment %}
+  
+  <div class="card overflow-hidden mt-5" >
+    <div class="row no-gutters row-bordered row-border-light">
+      <div class="col-md-3 pt-0">
+        <div class="list-group list-group-flush account-settings-links">
+          <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">Profile</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-update">Update Profile</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+           <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Address</a>
+           <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-orders">Orders</a>
+          {% comment %} <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a> {% endcomment %}
+        </div>
+      </div>
+
+      {% comment %} Profile Area {% endcomment %}
+
+      <div class="col-md-9">
+        <div class="tab-content">
+
+          <div class="tab-pane fade active show" id="account-general">
+            <hr class="border-light m-0">
+            <div class="card-body">
+             <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control mb-1" value="{{user.first_name}}" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" value="{{user.last_name}}" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <input type="text" class="form-control mb-1" value="{{user.email}}" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" value="{{user.phone_number}}" disabled>
+              </div>
+            </div>
+          </div>
+
+
+          {% comment %} update profile {% endcomment %}
+          <div class="tab-pane fade active show" id="account-update">
+            <hr class="border-light m-0">
+            <div class="card-body">
+                <form action="{% url 'update_profile' %}" method="POST" id="profileForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control mb-1" name="fname" value="{{ user.first_name }}" required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" name="lname" value="{{ user.last_name }}" required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">E-mail</label>
+                        <input type="text" class="form-control mb-1" name="email" value="{{ user.email }}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" name="phno" value="{{ user.phone_number }}" required/>
+                    </div>
+                    {% if messages %}
+                        <div class="alert text-danger" id="alert-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <button type="submit" value="submit" class="btn_3">Save</button>
+                </form>
+            </div>
+        </div>
+
+
+  
+          
+          <div class="tab-pane fade" id="account-change-password">
+            <div class="card-body pb-2">
+              <form method="POST" action="{% url "change_password" %}" id="changePasswordForm">
+                {% csrf_token %}
+
+              <div class="form-group">
+                <label class="form-label">Current password</label>
+                <input type="password" class="form-control" name="currentpass" required/>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">New password</label>
+                <input type="password" class="form-control" name="newpass" required/>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Repeat new password</label>
+                <input type="password" class="form-control" name="confirmpass" required/>
+              </div>
+              {% if messages %}
+                <div class=" alert text-danger" id='alert-message' >  
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                </div>
+              {% endif %}
+              <button type="submit" value="submit" class="btn_3">Save</button>
+            </form>
+            </div>
+          </div>
+
+          {% comment %} Order Area {% endcomment %}
+          <div class="tab-pane fade" id="account-orders">
+            <div class="card-body pb-2">
+
+              <table class="table table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Order Date</th>
+                    <th>Price</th>
+                    <th>Expected Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                {% for ord in orders %}
+                <tbody>
+                  <tr>
+                    <td>{{ord.order_id}}</td>
+                    <td>{{ord.address.name}}</td>
+                    <td>{{ord.address.street_address}}, {{ord.address.city}}, {{ord.address.state}}, {{ord.address.pin_code}}</td>
+                    <td>{{ord.order_date}}</td>
+                    <td>${{ord.total_price}}</td>
+                    <td>{{ord.expected_date}}</td>
+                    <td><a href="../../order_details/{{ ord.order_id }}" class="btn btn-secondary ms-1">View</button></a>
+                  </tr>
+                </tbody>
+                {% endfor %}
+              </table>
+
+            </div>
+          </div>
+
+          {% comment %} Address Area {% endcomment %}
+
+          <div class="tab-pane fade" id="account-info">
+            <div class="card-body pb-2">
+
+              <div class="col-lg-12">
+                <div class="col-md-12 mt-4 d-flex justify-content-between align-items-center">
+                  <h4>Address</h4>
+                  <a href="../add_address_user/">
+                    <button class="btn btn-primary">Add Address</button>
+                  </a>
+                </div>
+
+                <div class="form-group">
+                    {% for address in address_data %}
+                    <div class="address-box border-0 {% if forloop.counter == 1 %}primary-address{% endif %}">
+                        <input type="radio" id="adsel{{ forloop.counter }}" name="addreselect" value="{{ address.id }}" {% if forloop.counter == 1 %}checked{% endif %} required/>
+                        <div class="row">
+                          {% if forloop.counter == 1 %}
+                          <label for="adsel{{ forloop.counter }}" class="primary-label font-weight-bold">Primary Address</label>
+                          {% endif %}
+                            <div class="col-md-8">
+                                <p>Name: {{ address.name }}</p>
+                                <p>Mobile: {{ address.phone }}</p>
+                                <p>Address: {{ address.street_address }},{{ address.city }},{{ address.state }},{{ address.pin_code }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex ">
+                                    <a href="../../edit_address_user/{{ address.id }}" class="btn btn-primary mb-1">Edit</a>
+                                    <form >
+                                    <a  class="btn btn-danger mb-1 ms-1 btn-delete-address" data-address-id="{{ address.id }}">Delete</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      </div> 
+
+      {% comment %} This not using {% endcomment %}
+        <div class="tab-pane fade" id="account-order">
+          <div class="card-body pb-2">
+
+            <div class="table-responsive table-fixed" style="max-height: 300px;">
+              <table class="table table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Product Name</td>
+                    <td>01 Jan 2020</td>
+                    <td>$99</td>
+                    <td>Approved</td>
+                    <td><button class="btn btn-primary">View</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>     
+      </div>
+    </div>
+  </div>
+</div>
+{% comment %} This not using end {% endcomment %}
+
+<script>
+  function hideAlert() {
+    var alertMessage = document.getElementById('alert-message');
+    if (alertMessage) {
+        setTimeout(function() {
+            alertMessage.style.display = 'none';
+        }, 2000); 
+    }
+}
+window.onload = hideAlert;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Function to handle address deletion
+    function deleteAddress(addressId) {
+      // Get the CSRF token from the cookie
+      const csrftoken = getCookie('csrftoken');
+
+      $.ajax({
+        type: 'POST',
+        url: '{% url "delete_address_user" id=0 %}'.replace('0', addressId),
+        dataType: 'json',
+        headers: {'X-CSRFToken': csrftoken},  // Include the CSRF token in the headers
+        success: function(response) {
+          if (response.status === 'Deleted Successfully') {
+            // Reload the page or update the UI as needed
+            location.reload();  // You can also remove the deleted address from the UI without a page reload
+          } else {
+            // Handle error or show a different message
+            Swal.fire('Error', 'Failed to delete address', 'error');
+          }
+        },
+        error: function(error) {
+          console.log(error);
+          Swal.fire('Error', 'An error occurred', 'error');
+        }
+      });
+    }
+
+    // Event listener for delete button click
+    $('.btn-delete-address').click(function(e) {
+      e.preventDefault();
+      var addressId = $(this).data('address-id');
+
+      // Show a confirmation dialog before deletion
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If the user confirms, proceed with deletion
+          deleteAddress(addressId);
+        }
+      });
+    });
+
+    // Function to get CSRF token from the cookie
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Retrieve the active tab from sessionStorage
+    var activeTab = sessionStorage.getItem('activeTab');
+
+    // If an active tab is stored, set it
+    if (activeTab) {
+      $('.account-settings-links a[href="' + activeTab + '"]').tab('show');
+    }
+
+    // Store the active tab on tab change
+    $('.account-settings-links a').on('shown.bs.tab', function (e) {
+      var activeTab = $(e.target).attr('href');
+      sessionStorage.setItem('activeTab', activeTab);
+    });
+  });
+</script>
+
+<script>
+  function hideAlert() {
+      var alertMessage = document.getElementById('alert-message');
+      if (alertMessage) {
+          setTimeout(function() {
+              alertMessage.style.display = 'none';
+          }, 2000); 
+      }
+  }
+  window.onload = hideAlert;
+</script>
+
+{% comment %} Add SweetAlert CSS and JS {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('profileForm');
+
+    form.addEventListener('submit', function(event) {
+        var firstNameInput = document.querySelector('[name="fname"]');
+        var lastNameInput = document.querySelector('[name="lname"]');
+        var phoneNumberInput = document.querySelector('[name="phno"]');
+
+        // Validate First Name
+        if (!validateName(firstNameInput.value)) {
+            showAlert('Invalid First Name. It must start with a capital letter, contain only characters, and no empty spaces.');
+            event.preventDefault();
+            return false;
+        }
+
+        // Validate Last Name (optional)
+        // You can add a similar validation for the last name if needed
+
+        // Validate Phone Number
+        if (!validatePhoneNumber(phoneNumberInput.value)) {
+            showAlert('Invalid Phone Number. It must be 10 digits with no additional characters.');
+            event.preventDefault();
+            return false;
+        }
+
+        return true;
+    });
+
+    function validateName(name) {
+        var nameRegex = /^[A-Za-z]{3,}$/;
+        return nameRegex.test(name);
+    }
+
+    function validatePhoneNumber(phoneNumber) {
+      var phoneRegex = /^(?!([0-9])\1{9})\d{10}$/;
+      return phoneRegex.test(phoneNumber);
+    }
+
+    function showAlert(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: message,
+        });
+    }
+});
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var form = document.getElementById('profileForm');
+  
+      form.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+  
+          // Perform an AJAX request to handle form submission
+          fetch(form.action, {
+              method: form.method,
+              body: new FormData(form),
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              // Handle the JSON response and show SweetAlert
+              if (data.message === 'Profile updated successfully') {
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Success',
+                      text: data.message,
+                      onClose: function() {
+                          window.location.reload();  // Reload the page or perform any other action
+                      }
+                  });
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: data.message,
+                  });
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+      });
+  });
+  </script>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              var form = document.getElementById('changePasswordForm');
+      
+              form.addEventListener('submit', function (event) {
+                  event.preventDefault(); // Prevent the default form submission
+      
+                  // Perform password validation
+                  var newPasswordInput = document.querySelector('[name="newpass"]');
+                  var confirmPasswordInput = document.querySelector('[name="confirmpass"]');
+      
+                  if (!validatePassword(newPasswordInput.value, confirmPasswordInput.value)) {
+                      showAlert('Password validation failed. Please ensure the new password meets the criteria.');
+                      return;
+                  }
+      
+                  // If password validation passes, proceed with the form submission
+                  // Perform an AJAX request to handle form submission
+                  fetch(form.action, {
+                      method: form.method,
+                      body: new FormData(form),
+                      headers: {
+                          'X-Requested-With': 'XMLHttpRequest',
+                          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                      }
+                  })
+                      .then(response => response.json())
+                      .then(data => {
+                          // Handle the JSON response and show SweetAlert
+                          if (data.message === 'Password changed successfully') {
+                              Swal.fire({
+                                  icon: 'success',
+                                  title: 'Success',
+                                  text: data.message,
+                                  onClose: function () {
+                                      window.location.reload(); // Reload the page or perform any other action
+                                  }
+                              });
+                          } else {
+                              Swal.fire({
+                                  icon: 'error',
+                                  title: 'Error',
+                                  text: data.message,
+                              });
+                          }
+                      })
+                      .catch(error => {
+                          console.error('Error:', error);
+                      });
+              });
+      
+              function validatePassword(newPassword, confirmPassword) {
+                  // Password must contain a capital letter, a symbol, a number, and be at least 8 characters long
+                  var passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)[^\s]{8,}$/;
+      
+                  // Confirm password
+                  return passwordRegex.test(newPassword) && newPassword === confirmPassword;
+              }
+      
+              function showAlert(message) {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Validation Error',
+                      text: message,
+                  });
+              }
+          });
+      </script>
+      
+      
+
+{% endblock %}

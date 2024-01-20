@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Shop{% endblock  %}
+<style>
+    .range_container {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        margin: 100px auto;
+      }
+      
+      .sliders_control {
+        position: relative;
+        min-height: 50px;
+      }
+      
+      .form_control {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        font-size: 24px;
+        color: #635a5a;
+      }
+      
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;
+      }
+      
+      input[type=range]::-moz-range-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;  
+      }
+      
+      input[type=range]::-webkit-slider-thumb:hover {
+        background: #f7f7f7;
+      }
+      
+      input[type=range]::-webkit-slider-thumb:active {
+        box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+        -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+      }
+      
+      input[type="number"] {
+        color: #8a8383;
+        width: 50px;
+        height: 30px;
+        font-size: 20px;
+        border: none;
+      }
+      
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button {  
+         opacity: 1;
+      }
+      
+      input[type="range"] {
+        -webkit-appearance: none; 
+        appearance: none;
+        height: 2px;
+        width: 100%;
+        position: absolute;
+        background-color: #C6C6C6;
+        pointer-events: none;
+      }
+      
+      #fromSlider {
+        height: 0;
+        z-index: 1;
+      }
+</style>
+
+
+
+{% block content %}
+    <!--================Home Banner Area =================-->
+    <!-- breadcrumb start-->
+    <section class="breadcrumb breadcrumb_bg">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="breadcrumb_iner">
+                        <div class="breadcrumb_iner_item">
+                            <h2 class="text-warning">Shop</h2>
+                            <p class="text-white">Home <span>-</span> Shop</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumb start-->
+
+    <!--================Category Product Area =================-->
+    <section class="cat_product_area section_padding">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="left_sidebar_area">
+                        <aside class="left_widgets p_filter_widgets">
+                            <div class="l_w_title">
+                                <h3>Browse Categories</h3>
+                            </div>
+                            <form >
+                                {% csrf_token %}
+                                <div class="widgets_inner">
+                                    <ul class="list" id="category-list">
+                                        {% if Cat_list %}
+                                            {% for cat in Cat_list %}
+                                                <li>
+                                                    <label>
+                                                        <input type="checkbox" href="../../shop?selected_categories={{cat.id}}" name="category" value="{{ cat.name }}">
+                                                        {{ cat.name }}
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>No Categories are listed.</p>
+                                        {% endif %}
+                                    </ul>
+                                </div>   
+                            </aside>
+                        
+                        <aside class="left_widgets p_filter_widgets">
+                            <div class="l_w_title">
+                                <h3>Browse Brands</h3>
+                            </div>
+                            <div class="widgets_inner">
+                                <ul class="list" id="brand-list">
+                                    {% if Bran_list %}
+                                        {% for bran in Bran_list %}
+                                            <li>
+                                                <label>
+                                                    <input type="checkbox" href="../../shop?selected_brands={{bran.id}}" name="brand" value="{{ bran.name }}">
+                                                    {{ bran.name }}
+                                                </label>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p>No Brands are listed.</p>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </aside>
+                    
+                        <aside class="left_widgets p_filter_widgets price_rangs_aside">
+                            <div class="single-widget range">
+                                {% comment %} <h4>Shop by Price</h4> {% endcomment %}
+                                
+                            </div>            
+                        </aside>
+                    </form>
+                    </div>
+                </div>
+                
+                
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product_top_bar d-flex justify-content-between align-items-center">
+                                <div class="single_product_menu d-flex">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="search"
+                                            aria-describedby="inputGroupPrepend">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroupPrepend"><i
+                                                    class="ti-search"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--Product listing-->
+                    <div class="row product-list">
+                        {% for var in variants %}
+                            <div class="col-lg-4 col-sm-6 product_data">
+                                <div class="single_product_item">
+                                    <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt=""/></a>
+                                    <div class="single_product_text ">
+                                        <h4>{{ var.product.products_name }}</h4>
+                                        <p>Brand: {{ var.product.brand_id.name }}</p>
+                                        <p>Color: {{ var.color }}</p1>
+                                        <h3>${{ var.price }}</h3>
+                                        
+                                        {% csrf_token %}
+                                        <input type="hidden" id="product-id" value="{{var.id}}" class="prod_id">
+                                        {% if var.quantity > 0 %}
+                                        <a class="add_cart"><button type="button" id="add_cart" class="btn border-0 text-danger fw-bolder">+ ADD TO CART</button><i class="ti-heart"></i></a>
+                                        {% else %}
+                                        <a> OUT OF STOCK<i class="ti-heart"></i></a>
+                                        {% endif %}
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                                </div><div class="row">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                        <!--Product listing End-->
+                        
+                        <div class="col-lg-12">
+                            <div class="pageination">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item">
+                                            <a class="page-link" href="#" aria-label="Previous">
+                                                <i class="ti-angle-double-left"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">6</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#" aria-label="Next">
+                                                <i class="ti-angle-double-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Category Product Area =================-->
+
+    <section class="product_list best_seller section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="section_tittle text-center">
+                        <h2>Best Sellers <span>shop</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center justify-content-between">
+                <div class="col-lg-12">
+                    <div class="best_product_slider owl-carousel">
+                        {% for var in variants %}
+                        <div class="single_product_item">
+                            <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt="" /></a>
+                            <div class="single_product_text">
+                                <h4>{{var.product.products_name}}</h4>
+                                <p>Category: {{ var.product.category_id.name }}</p>
+                                <p>Brand: {{ var.product.brand_id.name }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- product_list part end-->
+    
+    <script src="{% static "assets_home/js/price_rangs.js" %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('.add_cart').click(function (e) {
+                e.preventDefault();
+    
+                // Update this line to use the correct class selector
+                var product_id = $(this).closest('.product_data').find('.prod_id').val();
+    
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+    
+                $.ajax({
+                    method: "POST",
+                    url: "/addcart/",
+                    data: {
+                        'product_id': product_id,
+                        csrfmiddlewaretoken: token
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+    
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Item Added to Cart',
+                                text: 'Your item has been added to the cart.',
+                                icon: 'success',
+                            });
+                            $('#cart-count-badge').text(response.cart_count);
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Already in cart',
+                                icon: 'error',
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error:", error);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+          // Function to handle checkbox click events
+          function filterProducts() {
+            var selectedCategories = $("input[name='category']:checked").map(function () {
+              return this.value;
+            }).get();
+      
+            var selectedBrands = $("input[name='brand']:checked").map(function () {
+              return this.value;
+            }).get();
+      
+            // Perform AJAX request to Django view
+            $.ajax({
+              method: "GET",
+              url: "/shop/",
+              data: {
+                'selected_categories': selectedCategories,
+                'selected_brands': selectedBrands,
+              },
+              dataType: 'html',
+              success: function (response) {
+                console.log(response); // Log the response to the console
+                $('#product-listing').html(response);
+              },
+              error: function (xhr, status, error) {
+                console.log("Error:", error);
+              }
+            });
+          }
+      
+          // Attach click event handlers to checkbox inputs
+          $('#category-list input[type="checkbox"]').on('click', filterProducts);
+          $('#brand-list input[type="checkbox"]').on('click', filterProducts);
+        });
+      </script>
+<!-- shop.html -->
+
+{% endblock %}
