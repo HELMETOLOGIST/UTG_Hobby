@@ -23,7 +23,7 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from django.views import View
 from xhtml2pdf import pisa
-
+from .models import *
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Sum, F, Count, ExpressionWrapper, DecimalField
 import csv
@@ -608,3 +608,76 @@ class DownloadPDF(View):
         content = "attachment; filename=%s" % (filename)
         response["Content-Disposition"] = content
         return response
+    
+    
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def banner(request):
+    banner = Banner.objects.all().order_by("-id")
+    print(banner)
+    return render(request, 'admin_side/banner.html', {'banner':banner})
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def add_banner(request):
+    products = ColorVarient.objects.filter(is_listed=True).order_by("id")
+    if request.method == "POST":
+        title = request.POST.get("title")
+        subtitle = request.POST.get("subtitle")
+        product = request.POST.get("product")
+        image = request.FILES.get("images")
+        variant = get_object_or_404(ColorVarient, pk=product)
+        print(product)
+        print(variant)
+        
+        Banner.objects.create(
+            title = title,
+            subtitle = subtitle,
+            variant = variant,
+            image = image,
+        )
+        return redirect('banner')
+    return render(request, 'admin_side/add_banner.html', {'products':products})
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def edit_banner(request,id):
+    banner = get_object_or_404(Banner, pk=id)
+    products = ColorVarient.objects.filter(is_listed=True).order_by("id")
+    
+    if request.method == "POST":
+        title = request.POST.get("title")
+        subtitle = request.POST.get("subtitle")
+        product = request.POST.get("product")
+        image = request.FILES.get("images")
+        variant = get_object_or_404(ColorVarient, pk=product)
+        
+        banner.title = title
+        banner.subtitle = subtitle
+        banner.variant = variant
+        
+        if image:
+            banner.image = image
+        banner.save()
+        return redirect('banner')
+    context = {
+        "banner":banner,
+        "products":products,
+    }
+    return render(request, 'admin_side/edit_banner.html', context)
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def banner_status(request,id):
+    banner = Banner.objects.filter(id=id).first()
+    
+    if banner.is_listed == True:
+        banner.is_listed = False
+        banner.save()
+    else:
+        banner.is_listed = True
+        banner.save()
+    return redirect('banner')

@@ -28,6 +28,9 @@ urlpatterns = [
     path('order_view/<str:order_id>/<str:id>/',views.order_vieww,name='order_view'),
     path('sales_report/', views.sales_report, name='sales_report'),
     path('download_exel',views.excel_report,name="download_exel"),
-    # path('download_pdf',views.download_pdf,name="download_pdf"),
     path('pdf_download',views.DownloadPDF.as_view(),name='pdf_download'),
+    path('banner',views.banner,name='banner'),
+    path('add_banner',views.add_banner,name='add_banner'), 
+    path('edit_banner/<str:id>/',views.edit_banner,name='edit_banner'), 
+    path('banner_status/<str:id>/',views.banner_status,name='banner_status'),
 ]

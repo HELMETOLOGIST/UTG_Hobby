@@ -1,0 +1,62 @@
+{% extends "admin_side/admin_base.html" %}
+{% load static %}
+{% block title %}Banner{% endblock %}
+{% block content  %}
+
+
+  <main id="main" class="main">
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Category</h3>
+
+              <a href="{% url "add_banner" %}"><button type="submit" class="btn btn-primary">Add Category</button></a>
+  
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">IMAGE</th>
+                    <th scope="col">TITLE</th>
+                    <th scope="col">VARIANT</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ban in banner %}
+                  <tr>
+                    <th scope="row">{{ban.id}}</th>
+                    <td><center><img src="{{ban.image.url}}" height="50px"/><center></td>
+                    <td>{{ban.title}}</td>
+                    <td>{{ban.variant.product.products_name}}
+                    {% if ban.is_listed %}
+                        <td>
+                            <a href="../../banner_status/{{ban.id}}"><button class="badge badge-danger" style="color:red;">Unlist</button></a>
+                        </td>
+                        {%else%}
+                        <td>
+                            <a href="../../banner_status/{{ban.id}}"><button class="badge badge-success" style="color:green;">List</button></a>
+                        </td>
+                        {%endif%}
+                    <td><a href="../../edit_banner/{{ban.id}}" class="btn btn-primary">Edit</a></td>
+                    
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  {% endblock %}

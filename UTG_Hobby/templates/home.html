@@ -3,6 +3,9 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
+<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
 <style>
     .img-wrap {
         position: relative;
@@ -17,33 +20,46 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the values for the shadow effect */
       }
 </style>
-    
-<div id="carouselExampleCaptions" class="carousel slide mt-5" data-bs-ride="carousel" style="margin-top: 700px;">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-    </div>
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="{% static "assets_home/img/b3.jpeg" %}" class="d-block w-100 img-fluid" alt="...">
-            <div class="carousel-caption d-none d-md-block">
-                <h5 class="fw-bolder fs-1">Christmas offer</h5>
-                <p class="text-dark">Incididunt ut labore et dolore magna aliqua quis ipsum suspendisse ultrices gravida. Risus commodo viverra</p>
-                <a href="#" class="btn_3">buy now</a>
+<!-- Banner Area -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<link href="https://raw.githubusercontent.com/daneden/animate.css/master/animate.css" rel="stylesheet">
+
+<div id="myCarousel" class="carousel slide carousel-fade" data-ride="carousel">
+  <div class="carousel-inner">
+    {% for ban in banner %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %} mt-3">
+        <div class="mask flex-center mt-4" style="background-color:#b55c31;">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-md-7 col-12 order-md-1 order-2">
+                <h4>{{ban.title}}</h4>
+                <p style="max-width:60%">{{ ban.subtitle }}</p>
+                <a href="../products_details/{{ban.variant.id}}">BUY NOW</a>
+              </div>
+              <div class="col-md-5 col-12 order-md-2 order-1 mt-4">
+                <img src="{{ban.image.url}}" class="mx-auto" alt="slide">
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
+      </div>
+    {% endfor %}
+  </div>
+  <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
 </div>
-    <!-- banner part start-->
+<!-- Slide end -->
+ 
+
 
 <!-- Start Why Choose Us Section -->
 <div class="why-choose-section">
@@ -52,7 +68,6 @@
             <div class="col-lg-6">
                 <h2 class="section-title">Why Choose Us</h2>
                 <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
-
                 <div class="row my-5">
                     <div class="col-6 col-md-6">
                         <div class="feature">
@@ -63,7 +78,6 @@
                             <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
                         </div>
                     </div>
-
                     <div class="col-6 col-md-6">
                         <div class="feature">
                             <div class="icon">
@@ -97,9 +111,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-5">
+            <div class="col-lg-4">
                 <div class="img-wrap">
-                    <img src="{% static "assets_home/img/pea.jpg" %}" alt="Image" class="img-fluid">
+                    <img src="{% static "assets_home/img/pea.jpg" %}" alt="Image" class="img-fluid ">
                 </div>
             </div>
 
@@ -380,5 +394,12 @@
             });
         });
     </script> 
+<script>
+
+    $('#myCarousel').carousel({
+        interval: 3000,
+     })
+ 
+</script>
 
     {% endblock %}
