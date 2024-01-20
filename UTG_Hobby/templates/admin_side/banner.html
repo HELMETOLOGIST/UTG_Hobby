@@ -30,7 +30,7 @@
                   {% for ban in banner %}
                   <tr>
                     <th scope="row">{{ban.id}}</th>
-                    <td><center><img src="{{ban.image.url}}" height="50px"/><center></td>
+                    <td><img src="{{ban.image.url}}" height="50px"/></td>
                     <td>{{ban.title}}</td>
                     <td>{{ban.variant.product.products_name}}
                     {% if ban.is_listed %}

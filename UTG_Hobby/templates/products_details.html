@@ -1,7 +1,35 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Product Details{% endblock %}
+<style>
+  /* Custom styles for carousel controls */
+  .carousel-control-prev,
+  .carousel-control-next {
+      color: #000000; /* Change this to the desired color */
+      font-size: 2rem; /* Adjust the font size as needed */
+      top: 50%; /* Adjust the vertical position */
+      transform: translateY(-50%); /* Center vertically */
+  }
 
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+      background-color: #000000; /* Change this to the desired background color */
+      border: 1px solid #ffffff; /* Change this to the desired border color */
+      border-radius: 5px; /* Adjust the border-radius as needed */
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+      width: 40px; /* Adjust the width as needed */
+      height: 40px; /* Adjust the height as needed */
+  }
+
+  .carousel-control-prev:hover,
+  .carousel-control-next:hover {
+      color: #000000; /* Change this to the desired color on hover */
+      background-color: #ffffff; /* Change this to the desired background color on hover */
+  }
+</style>
 {% block content %}
   <!-- breadcrumb start-->
   <section class="breadcrumb breadcrumb_bg">
@@ -26,30 +54,30 @@
 <div class="product_image_area section_padding">
   <div class="container product_data">
       <div class="row s_product_inner justify-content-around">
-          <div class="col-lg-5 col-xl-5">
-              <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                  <ol class="carousel-indicators">
-                      {% for img in product.images.all %}
-                          <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
-                      {% endfor %}
-                  </ol>
-                  <div class="carousel-inner">
-                      {% for img in product.images.all %}
-                          <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                              <img class="d-block w-100" src="{{ img.image.url }}" alt="Slide {{ forloop.counter }}">
-                          </div>
-                      {% endfor %}
-                  </div>
-                  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Next</span>
-                  </a>
+        <div class="col-lg-5 col-xl-5">
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators">
+                  {% for img in product.images.all %}
+                      <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+                  {% endfor %}
+              </ol>
+              <div class="carousel-inner">
+                  {% for img in product.images.all %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                          <img class="d-block w-100" src="{{ img.image.url }}" alt="Slide {{ forloop.counter }}">
+                      </div>
+                  {% endfor %}
               </div>
+              <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+              </a>
           </div>
+      </div>
 
           <div class="col-lg-5 col-xl-5">
               <div class="s_product_text">

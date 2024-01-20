@@ -10,7 +10,7 @@
         <h5 class="card-title">Edit Banner</h5>
 
         <!-- No Labels Form -->
-        <form id="productForm" class="row g-3" action="{% url 'edit_banner' id=banner.id %}" method="POST">
+        <form id="productForm" class="row g-3" enctype="multipart/form-data" action="{% url 'edit_banner' id=banner.id %}" method="POST">
           {% csrf_token %}
           <div class="col-md-12">
             <input type="text" class="form-control" placeholder="Title" value="{{banner.title}}" name="title">
@@ -21,15 +21,16 @@
           <div class="col-md-12">
               <select id="inputState" class="form-select" name='product' value="{{pro.product.products_name}}" required>
                 {% for pro in products %}
-              <option value="{{pro.id}}" >{{pro.product.products_name}} - {{pro.color}}</option>
+              <option value="{{pro.id}}" {% if pro.id == banner.variant.id %}selected{% endif %}>{{pro.product.products_name}} - {{pro.color}}</option>
               {% endfor %}
             </select>
         </div>
         <div class="col-10">
             <div class="row mb-3">
               <div class="col-sm-10 col-md-4">
-                  <input class="form-control" type="file" id="formFile" name="images" multiple>
+                  <input class="form-control" type="file" id="formFile" name="images">
                   <span class="error-message text-danger mt-2" id="images-error"></span>
+                  <img src="{{banner.image.url}}" alt="{{banner.image}}" class="color-thumbnail border-2 " height='70px'></a>
               </div>
             </div>
           </div>

@@ -464,6 +464,10 @@ def dashboardd(request):
         'year': orders_chart.filter(order_date__year=chart_end_time.year).count(),
     }
 
+    
+    # Round Graph for most buyed category and payment method 
+    
+
     # Pass the order counts and other context data to the template
     context = {
         'revenue': revenue,
