@@ -1,4 +1,5 @@
 import datetime
+import json
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as admin_login, logout as admin_logout
@@ -13,7 +14,7 @@ from user_order.models import Order, OrderItem
 from user_profile.models import Address
 from user_cart.models import Cart
 from django.utils import timezone
-from datetime import timedelta
+from datetime import date, timedelta
 from django.http import JsonResponse
 from django.db.models import Sum
 from datetime import datetime
@@ -26,8 +27,8 @@ from xhtml2pdf import pisa
 from .models import *
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Sum, F, Count, ExpressionWrapper, DecimalField
-import csv
 import xlwt
+import datetime
 from django.db.models.functions import TruncMonth, TruncYear
 
 
@@ -419,13 +420,10 @@ def order_vieww(request, order_id, id):
 @user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
 def dashboardd(request):
     filter_value = request.GET.get('filter_value') #count of user,customer,revenue
-    line_value = request.GET.get('line_value', 'chart_today') #line_chart
-    print("drtfgvghfvyhgvfuhvuhybguh:",line_value)
     recent_activity = OrderItem.objects.all().order_by('-modified_time') #modified recent activity
-    print(recent_activity)
     
     # Filtering the user count, revenue and customer count
-    end_time = datetime.now()
+    end_time = datetime.datetime.now()
     if filter_value == 'today':
         start_time = end_time - timedelta(days=1)
     elif filter_value == 'this_month':
@@ -441,20 +439,41 @@ def dashboardd(request):
     users = orders.values('user').distinct().count()
     
     # Filtering the line_chart here
+    line_value = request.GET.get('line_value', 'chart_today') #line_chart
+    from django.utils import timezone
+
+    # Assuming chart_end_time is already defined
     chart_end_time = timezone.now()
 
-    if line_value == 'chart_today':
-        chart_start_time = chart_end_time - timedelta(days=1)
-        date_range = 'day'
-    elif line_value == 'chart_this_month':
-        chart_start_time = chart_end_time - timedelta(weeks=4)  # Adjust the range as needed
-        date_range = 'month'
-    elif line_value == 'chart_this_year':
-        chart_start_time = chart_end_time - timedelta(days=365)
-        date_range = 'year'
-    else:
-        chart_start_time = chart_end_time - timedelta(days=1)
-        date_range = 'day'
+    weekday_orders = []
+
+    for days_ago in range(6, -1, -1):  # Start from 6 days ago and go backward to 0 (today)
+        start_date = chart_end_time - timedelta(days=days_ago)
+        end_date = start_date + timedelta(days=1)
+
+        # Fetch the count of OrderItem objects for the specified date range
+        day_orders = OrderItem.objects.filter(order__order_date__range=(start_date, end_date)).count()
+
+        # Check the count for debugging
+        weekday_orders.append({'date': start_date.strftime("%A"), 'count': day_orders})
+
+    # Month order datas
+    month_orders = []
+    for month in range(1, 13):
+        start_date = date(chart_end_time.year, month, 1)
+        if month == 12:  # Adjust end_date for December to include the year's end
+            end_date = date(chart_end_time.year + 1, 1, 1)
+        else:
+            end_date = date(chart_end_time.year, month + 1, 1)
+        month_orders.append({'date': start_date.strftime("%B"), 'count': OrderItem.objects.filter(order__order_date__range=(start_date, end_date)).count()})
+        month_orders = month_orders[::-1]
+    # Year order datas
+    year_orders = []
+    for year in range(2024, 2018, -1):
+        year_orders.append({'date': year, 'count': OrderItem.objects.filter(order__order_date__year=year).count()})
+        year_orders = year_orders[::-1]
+
+    chart_start_time = chart_end_time - timedelta(days=1)
 
     # Fetch order counts based on the selected time range
     orders_chart = Order.objects.filter(order_date__range=[chart_start_time, chart_end_time])
@@ -463,14 +482,14 @@ def dashboardd(request):
         'month': orders_chart.filter(order_date__month=chart_end_time.month).count(),
         'year': orders_chart.filter(order_date__year=chart_end_time.year).count(),
     }
-
-    
     # Round Graph for most buyed category and payment method 
-    
+    payment_method_counts = Order.objects.values('payment_mode').annotate(count=Count('payment_mode'))
+    category_method_counts = Category.objects.annotate(count=Count('products')).order_by('-count')
+    category_counts_list = list(category_method_counts.values('name', 'count'))
 
     # Pass the order counts and other context data to the template
     context = {
-        'revenue': revenue,
+        'revenue': int(revenue),
         'users': users,
         'orders': orders.count(),
         'start_time': start_time,
@@ -480,7 +499,12 @@ def dashboardd(request):
         'chart_start_time': chart_start_time,
         'chart_end_time': chart_end_time,
         'order_counts': order_counts,
-        'date_range': date_range,
+        'line_value': line_value,
+        'payment_method_counts_json': json.dumps(list(payment_method_counts)),
+        'category_counts_list_json':json.dumps(list(category_counts_list)),
+        'weekday_orders_json':json.dumps(list(weekday_orders)),
+        'month_orders_json':json.dumps(list(month_orders)),
+        'year_orders_json':json.dumps(list(year_orders)),
     }
     
     return render(request, 'admin_side/dashboard.html', context)

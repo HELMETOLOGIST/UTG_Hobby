@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'user_order',
     'user_wallet',
     'admin_side',
+    'django.contrib.humanize',
     
 ]
 
