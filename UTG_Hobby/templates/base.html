@@ -74,10 +74,10 @@
                         </div>
                         {% if request.user.is_authenticated %}
                         <div class="hearer_icon d-flex ">
-                            <a id="search_1" href=""><i class="ti-search text-warning"></i></a>
+                            <a id="search_1" href="javascript:void(0)"><i class="ti-search text-warning"></i></a>
                             <a href=""><i class="ti-heart text-warning"></i></a>
                             <div class="dropdown cart cart-icon">
-                                <a class="dropdown-item" href="{% url "cart" %}">
+                                <a class="dropdown-item p-0" href="{% url "cart" %}">
                                     <i class="fas fa-cart-plus text-warning"></i>
                                 </a>
                             </div>
@@ -116,15 +116,17 @@
                 </div>
             </div>
         </div>
+        <form method="GET">
         <div class="search_input" id="search_input_box">
             <div class="container ">
-                <form class="d-flex justify-content-between search-inner">
-                    <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+                <form class="d-flex justify-content-between search-inner" action="">
+                    <input type="text" name="search" class="form-control" id="search_input" placeholder="Search Here">
                     <button type="submit" class="btn"></button>
                     <span class="ti-close" id="close_search" title="Close Search"></span>
                 </form>
             </div>
         </div>
+    </form>
     </header>
     <!-- Header part end-->
     <body>

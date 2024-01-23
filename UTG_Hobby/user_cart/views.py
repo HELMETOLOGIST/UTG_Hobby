@@ -1,3 +1,5 @@
+from django.utils import timezone
+import datetime
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
@@ -6,6 +8,7 @@ from user_authentication.models import CustomUser
 from user_cart.models import Cart
 from django.http import JsonResponse, HttpResponse
 from user_profile.models import Address
+from user_coupon.models import Coupon,CouponUsage
 # Create your views here.
 
 @login_required
@@ -76,13 +79,13 @@ def remove_item_from_cartt(request):
 @login_required
 def update_cartt(request):
     if request.method == "POST":
-        user = request.user
-        use = CustomUser.objects.filter(email=user).first()
+        email = request.user.email
+        user = CustomUser.objects.filter(email=email).first()
         change = int(request.POST.get("change"))
         variant_id = request.POST.get("variantId")
         varient_obj = get_object_or_404(ColorVarient, id=variant_id)
 
-        cart = get_object_or_404(Cart, user=use, product=varient_obj)
+        cart = get_object_or_404(Cart, user=user, product=varient_obj)
 
         if change == 1:
             if varient_obj.quantity > cart.prod_quantity:
@@ -101,7 +104,7 @@ def update_cartt(request):
         prodtotal = cart.prod_quantity * priceOfInstance
         cart.cart_price = prodtotal
         cart.save()
-        cart_items = Cart.objects.filter(user=use)
+        cart_items = Cart.objects.filter(user=user)
         total = sum(cart_items.values_list("cart_price", flat=True))
         
     response_data = {
@@ -121,12 +124,16 @@ def checkoutt(request):
     cart_items = Cart.objects.filter(user=user)
     cart_count = cart_items.count()
     total = sum(cart_items.values_list("cart_price", flat=True))
+    coupons = Coupon.objects.filter(is_active=True).filter(exp_date__gte=timezone.now())
+    
+    # print("Coupons:", coupons)
     
     context = {
         "addresses":address,
         "cart_items":cart_items,
         'total':total,
         'cart_count':cart_count,
+        'coupons':coupons,
     }
     
     return render(request, "checkout.html", context)

@@ -13,6 +13,7 @@ class Cart(models.Model):
     def __str__(self):
         return self.product.product.products_name
     
+    
    
 
 # Create your models here.

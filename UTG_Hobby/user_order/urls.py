@@ -9,5 +9,7 @@ urlpatterns = [
     path('return_order/',views.return_orderr,name='return_order'),
     path('invoice',views.invoice,name='invoice'),
     path('user_invoice/<str:order_id>/',views.user_invoicee,name='user_invoice'),
+    path('apply_coupons/', views.apply_coupons, name='apply_coupons'),
+    # path('remove_coupon/', views.remove_coupon, name='remove_coupon'),
 
 ]

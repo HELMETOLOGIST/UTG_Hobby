@@ -1,88 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Shop{% endblock  %}
-<style>
-    .range_container {
-        display: flex;
-        flex-direction: column;
-        width: 80%;
-        margin: 100px auto;
-      }
-      
-      .sliders_control {
-        position: relative;
-        min-height: 50px;
-      }
-      
-      .form_control {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        font-size: 24px;
-        color: #635a5a;
-      }
-      
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        pointer-events: all;
-        width: 24px;
-        height: 24px;
-        background-color: #fff;
-        border-radius: 50%;
-        box-shadow: 0 0 0 1px #C6C6C6;
-        cursor: pointer;
-      }
-      
-      input[type=range]::-moz-range-thumb {
-        -webkit-appearance: none;
-        pointer-events: all;
-        width: 24px;
-        height: 24px;
-        background-color: #fff;
-        border-radius: 50%;
-        box-shadow: 0 0 0 1px #C6C6C6;
-        cursor: pointer;  
-      }
-      
-      input[type=range]::-webkit-slider-thumb:hover {
-        background: #f7f7f7;
-      }
-      
-      input[type=range]::-webkit-slider-thumb:active {
-        box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-        -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-      }
-      
-      input[type="number"] {
-        color: #8a8383;
-        width: 50px;
-        height: 30px;
-        font-size: 20px;
-        border: none;
-      }
-      
-      input[type=number]::-webkit-inner-spin-button, 
-      input[type=number]::-webkit-outer-spin-button {  
-         opacity: 1;
-      }
-      
-      input[type="range"] {
-        -webkit-appearance: none; 
-        appearance: none;
-        height: 2px;
-        width: 100%;
-        position: absolute;
-        background-color: #C6C6C6;
-        pointer-events: none;
-      }
-      
-      #fromSlider {
-        height: 0;
-        z-index: 1;
-      }
-</style>
 
 
+<link rel="stylesheet" href="{% static 'assets_home/css/slider.css' %}" type='text/css'>
 
 {% block content %}
     <!--================Home Banner Area =================-->
@@ -112,17 +33,18 @@
                     <div class="left_sidebar_area">
                         <aside class="left_widgets p_filter_widgets">
                             <div class="l_w_title">
-                                <h3>Browse Categories</h3>
                             </div>
-                            <form >
-                                {% csrf_token %}
-                                <div class="widgets_inner">
+                            <div class="widgets_inner">
+                                <form id="filter-form">
+                                    {% csrf_token %}
                                     <ul class="list" id="category-list">
+                                        <h4>Browse Categories</h4>
+
                                         {% if Cat_list %}
                                             {% for cat in Cat_list %}
                                                 <li>
                                                     <label>
-                                                        <input type="checkbox" href="../../shop?selected_categories={{cat.id}}" name="category" value="{{ cat.name }}">
+                                                        <input type="checkbox" name="selected_categories" value="{{ cat.id }}">
                                                         {{ cat.name }}
                                                     </label>
                                                 </li>
@@ -131,57 +53,37 @@
                                             <p>No Categories are listed.</p>
                                         {% endif %}
                                     </ul>
-                                </div>   
-                            </aside>
-                        
-                        <aside class="left_widgets p_filter_widgets">
-                            <div class="l_w_title">
-                                <h3>Browse Brands</h3>
-                            </div>
-                            <div class="widgets_inner">
-                                <ul class="list" id="brand-list">
-                                    {% if Bran_list %}
+                                    <ul class="list" id="brand-list">
+                                        <h4>Browse Brands</h4>
+                                        {% if Bran_list %}
                                         {% for bran in Bran_list %}
-                                            <li>
-                                                <label>
-                                                    <input type="checkbox" href="../../shop?selected_brands={{bran.id}}" name="brand" value="{{ bran.name }}">
-                                                    {{ bran.name }}
+                                        <li>
+                                                    <label>
+                                                        <input type="checkbox" name="selected_brands" value="{{ bran.id }}">
+                                                        {{ bran.name }}
                                                 </label>
-                                            </li>
+                                        </li>
                                         {% endfor %}
-                                    {% else %}
-                                        <p>No Brands are listed.</p>
-                                    {% endif %}
-                                </ul>
+                                        {% else %}
+                                            <p>No Brands are listed.</p>
+                                        {% endif %}
+                                    </ul>
+                                    <button type="submit" class="btn_3 btn-primary ml-5 mt-4">Apply</button>
+                                </form>
                             </div>
                         </aside>
                     
                         <aside class="left_widgets p_filter_widgets price_rangs_aside">
-                            <div class="single-widget range">
-                                {% comment %} <h4>Shop by Price</h4> {% endcomment %}
-                                
-                            </div>            
+                            
                         </aside>
                     </form>
                     </div>
                 </div>
                 
                 
-                <div class="col-lg-9">
-                    <div class="row">
+                    <div class="col-lg-9">
+                        <div class="row">
                         <div class="col-lg-12">
-                            <div class="product_top_bar d-flex justify-content-between align-items-center">
-                                <div class="single_product_menu d-flex">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="search"
-                                            aria-describedby="inputGroupPrepend">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputGroupPrepend"><i
-                                                    class="ti-search"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     
@@ -191,11 +93,11 @@
                             <div class="col-lg-4 col-sm-6 product_data">
                                 <div class="single_product_item">
                                     <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt=""/></a>
-                                    <div class="single_product_text ">
-                                        <h4>{{ var.product.products_name }}</h4>
-                                        <p>Brand: {{ var.product.brand_id.name }}</p>
-                                        <p>Color: {{ var.color }}</p1>
-                                        <h3>${{ var.price }}</h3>
+                                    <div class="single_product_text">
+                                        <h4 class="ml-4">{{ var.product.products_name }}</h4>
+                                        <p class="ml-4 text-black">Brand: {{ var.product.brand_id.name }}</p>
+                                        <p class="ml-4 text-black">Color: {{ var.color }}</p1>
+                                        <h3 class="ml-4">${{ var.price }}</h3>
                                         
                                         {% csrf_token %}
                                         <input type="hidden" id="product-id" value="{{var.id}}" class="prod_id">
@@ -220,10 +122,14 @@
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination justify-content-center">
                                         <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="Previous">
+                                            {% if homeVariant.has_previous %}
+                                            <a class="page-link" href="?page={{homeVariant.previous_page_number}}" aria-label="Previous">
                                                 <i class="ti-angle-double-left"></i>
                                             </a>
                                         </li>
+                                        {% endif %}
+                                        {% for i in homeVariant.paginator.page_range %}
+                                        
                                         <li class="page-item"><a class="page-link" href="#">1</a></li>
                                         <li class="page-item"><a class="page-link" href="#">2</a></li>
                                         <li class="page-item"><a class="page-link" href="#">3</a></li>
@@ -231,9 +137,11 @@
                                         <li class="page-item"><a class="page-link" href="#">5</a></li>
                                         <li class="page-item"><a class="page-link" href="#">6</a></li>
                                         <li class="page-item">
+                                            {% endfor %}
                                             <a class="page-link" href="#" aria-label="Next">
                                                 <i class="ti-angle-double-right"></i>
                                             </a>
+                                            
                                         </li>
                                     </ul>
                                 </nav>
@@ -246,7 +154,7 @@
     </section>
     <!--================End Category Product Area =================-->
 
-    <section class="product_list best_seller section_padding">
+    {% comment %} <section class="product_list best_seller section_padding">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-12">
@@ -272,7 +180,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> {% endcomment %}
 
     <!-- product_list part end-->
     
@@ -322,43 +230,27 @@
             });
         });
     </script>
-
     <script>
-        $(document).ready(function () {
-          // Function to handle checkbox click events
-          function filterProducts() {
-            var selectedCategories = $("input[name='category']:checked").map(function () {
-              return this.value;
-            }).get();
-      
-            var selectedBrands = $("input[name='brand']:checked").map(function () {
-              return this.value;
-            }).get();
-      
-            // Perform AJAX request to Django view
-            $.ajax({
-              method: "GET",
-              url: "/shop/",
-              data: {
-                'selected_categories': selectedCategories,
-                'selected_brands': selectedBrands,
-              },
-              dataType: 'html',
-              success: function (response) {
-                console.log(response); // Log the response to the console
-                $('#product-listing').html(response);
-              },
-              error: function (xhr, status, error) {
-                console.log("Error:", error);
-              }
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("filter-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+                applyFilters(this);
             });
-          }
-      
-          // Attach click event handlers to checkbox inputs
-          $('#category-list input[type="checkbox"]').on('click', filterProducts);
-          $('#brand-list input[type="checkbox"]').on('click', filterProducts);
+    
+            function applyFilters(form) {
+                const formData = new FormData(form);
+                const url = window.location.pathname + "?" + new URLSearchParams(formData).toString();
+                window.location.href = url;
+            }
         });
-      </script>
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+    <script>
+ 
+    </script>
+
+
 <!-- shop.html -->
 
 {% endblock %}

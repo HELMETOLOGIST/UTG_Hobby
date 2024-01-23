@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
-<style>
+{% comment %} <style>
     .img-wrap {
         position: relative;
       }
@@ -19,7 +19,7 @@
         border-radius: 8px; /* Optional: Add border-radius for rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the values for the shadow effect */
       }
-</style>
+</style> {% endcomment %}
 <!-- Banner Area -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -31,7 +31,7 @@
   <div class="carousel-inner">
     {% for ban in banner %}
       <div class="carousel-item {% if forloop.first %}active{% endif %} mt-3">
-        <div class="mask flex-center mt-4" style="background-color:#b55c31;">
+        <div class="mask flex-center mt-3" style="background-color:#b55c31;">
           <div class="container">
             <div class="row align-items-center">
               <div class="col-md-7 col-12 order-md-1 order-2">
@@ -63,11 +63,11 @@
 
 <!-- Start Why Choose Us Section -->
 <div class="why-choose-section">
-    <div class="container">
-        <div class="row justify-content-between">
+    <div class="container pr-0 pl-0 ">
+        <div class="row justify-content-between mr-0 ml-0">
             <div class="col-lg-6">
                 <h2 class="section-title">Why Choose Us</h2>
-                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+                <p class="text-black">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
                 <div class="row my-5">
                     <div class="col-6 col-md-6">
                         <div class="feature">
@@ -75,7 +75,7 @@
                                 <img src="{% static "assets_home/img/truck.svg" alt="Image" %}" class="imf-fluid">
                             </div>
                             <h3>Fast &amp; Free Shipping</h3>
-                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                            <p class="text-black">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
                         </div>
                     </div>
                     <div class="col-6 col-md-6">
@@ -84,7 +84,7 @@
                                 <img src="{% static "assets_home/img/bag.svg" alt="Image" %}" class="imf-fluid">
                             </div>
                             <h3>Easy to Shop</h3>
-                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                            <p class="text-black">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
                         </div>
                     </div>
 
@@ -94,7 +94,7 @@
                                 <img src="{% static "assets_home/img/support.svg" %}" alt="Image" class="imf-fluid">
                             </div>
                             <h3>24/7 Support</h3>
-                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                            <p class="text-black">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
                         </div>
                     </div>
 
@@ -104,7 +104,7 @@
                                 <img src="{% static "assets_home/img/return.svg" %}" alt="Image" class="imf-fluid">
                             </div>
                             <h3>Hassle Free Returns</h3>
-                            <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+                            <p class="text-black">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
                         </div>
                     </div>
 
@@ -143,10 +143,10 @@
                                 <div class="single_product_item border">
                                     <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt=""/></a>
                                     <div class="single_product_text">
-                                        <h4> {{ var.product.products_name }}</h4>
-                                        <p> Brand: {{ var.product.brand_id.name }}</p>
-                                        <p> Color: {{ var.color }}</p1>
-                                        <h3> ${{ var.price }}</h3>
+                                        <h4 class="ml-4"> {{ var.product.products_name }}</h4>
+                                        <p class="ml-4 text-black"> Brand: {{ var.product.brand_id.name }}</p>
+                                        <p class="ml-4 text-black"> Color: {{ var.color }}</p1>
+                                        <h3 class="ml-4"> ${{ var.price }}</h3>
                                         {% csrf_token %}
                                         <input type="hidden" id="product-id" value="{{var.id}}" class="prod_id">
                                         {% if var.quantity > 0 %}

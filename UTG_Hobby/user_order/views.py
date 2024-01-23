@@ -20,7 +20,8 @@ import razorpay
 from user_wallet.models import Wallet
 from django.conf import settings
 from decimal import Decimal, ROUND_DOWN
-
+from user_coupon.models import Coupon,CouponUsage
+from django.core.exceptions import ObjectDoesNotExist
 
 client = razorpay.Client(auth=(config('RAZORPAY_API_KEY'), config('RAZORPAY_API_SECRET_KEY')))
 
@@ -32,7 +33,6 @@ def place_orderr(request):
     if request.user.is_authenticated:
         email = request.user.email
         user = get_object_or_404(CustomUser, email=email)
-        
         cart_items = Cart.objects.filter(user=user)
         out_of_stock_items = [item for item in cart_items if item.prod_quantity > item.product.quantity]
         if out_of_stock_items:
@@ -42,21 +42,27 @@ def place_orderr(request):
             address_id = request.POST.get('addreselect')
             payment_mode = request.POST.get('payment_mode')
             cart_items = Cart.objects.filter(user=user)
+            coupon_disc = CouponUsage.objects.filter(user=user)
             delivery_address = get_object_or_404(Address, user=user, id=address_id)
+            coupon_code = request.POST.get('coupon_code')
             
             if payment_mode == 'cod':
-                
                 if cart_items.exists():
                     try:
                         with transaction.atomic():
-                            total_price = sum(cart_items.values_list("cart_price", flat=True))
-                            
+                            total_price = 0
+                            if 'final_amount' in request.session:
+                                final_amount = int(request.session['final_amount'])
+                            else:
+                                total_price = sum(cart_items.values_list("cart_price", flat=True))
+
+                            print("price:",total_price)
                             order = Order.objects.create(
                                 user = user,
                                 address = delivery_address,
                                 payment_mode = payment_mode,
                                 quantity = 0,
-                                total_price = total_price,
+                                total_price = final_amount if 'final_amount' in request.session else total_price,
                             )
                             
                             for cart_item in cart_items:
@@ -106,7 +112,11 @@ def place_orderr(request):
                 if cart_items.exists():
                     try:
                         with transaction.atomic():
-                            total_price = sum(cart_items.values_list("cart_price", flat=True))
+                            total_price = 0
+                            if 'final_amount' in request.session:
+                                final_amount = int(request.session['final_amount'])
+                            else:
+                                total_price = sum(cart_items.values_list("cart_price", flat=True))
 
                             # Create Order instance
                             order = Order.objects.create(
@@ -114,7 +124,7 @@ def place_orderr(request):
                                 address=delivery_address,
                                 payment_mode=payment_mode,
                                 quantity=0,
-                                total_price=total_price,
+                                total_price = final_amount if 'final_amount' in request.session else total_price,
                             )
 
                             # Create OrderItem instances
@@ -137,7 +147,7 @@ def place_orderr(request):
                             order.expected_date = (order.order_date + timedelta(days=7))
                             order.save()
                             request.session['order_id'] = str(order.order_id)
-
+                            total_price = final_amount if 'final_amount' in request.session else total_price,
                             # Create Razorpay order
                             razorpay_order_data = {
                                 'amount': total_price * 100,  # Amount in paise
@@ -174,19 +184,22 @@ def place_orderr(request):
                 if cart_items.exists():
                     try:
                         with transaction.atomic():
+                            total_price = 0
+                            if 'final_amount' in request.session:
+                                final_amount = int(request.session['final_amount'])
+                            else:
+                                total_price = sum(cart_items.values_list("cart_price", flat=True))
                             user_wallet = Wallet.objects.filter(user=user).last()
                             last = user_wallet.balance_amount
                             print(last)
-                            total_price = sum(cart_items.values_list("cart_price", flat=True))
-                            
-                            
+                        
                             if user_wallet.balance_amount >= total_price:
                                 order = Order.objects.create(
                                     user=user,
                                     address=delivery_address,
                                     payment_mode=payment_mode,
                                     quantity=0,
-                                    total_price=total_price,
+                                    total_price = final_amount if 'final_amount' in request.session else total_price,
                                 )
                                 
                                 for cart_item in cart_items:
@@ -210,6 +223,7 @@ def place_orderr(request):
                                 request.session['order_id'] = str(order.order_id)
                                 
                                 amount = request.session["amount"]
+                                total_price = final_amount if 'final_amount' in request.session else total_price
                                 new = last - total_price
                                 new = Decimal(new)
                                 wallet_s = Wallet(
@@ -218,7 +232,7 @@ def place_orderr(request):
                                     transaction_type="Debit",
                                     transaction_details=f'Purchased for Rs.{total_price}.00',
                                     date=timezone.now(),
-                                    transaction_amount=amount
+                                    transaction_amount=amount,
                                 )
                                 wallet_s.save()
                                 
@@ -272,23 +286,6 @@ def order_success(request):
             messages.error(request, 'Invalid or missing order ID in session.')
             return redirect('home')  # Redirect to home or another appropriate page
       
-# def cart_check(request):
-#     cart_items = Cart.objects.filter(user=request.user)
-#     if cart_items:
-#         response_data = {
-#                             'success':True,
-#                             'message':' cart items avail',
-#                         }
-#         return JsonResponse(response_data)
-#     else:
-#         response_data = {
-#                             'success':False,
-#                             'message':'No cart items',
-#                         }
-#         return JsonResponse(response_data)
-        
-        
-
 
 def cancel_orderr(request,id):
     email = request.user.email
@@ -407,3 +404,88 @@ def user_invoicee(request,order_id):
         return render(request, 'user_invoice.html', context)
     else:
         return HttpResponse("Unauthorized", status=401)
+    
+    
+@login_required
+def apply_coupons(request):
+    """
+    This function will handle coupons
+    
+    """
+    if request.method == "POST":
+        email = request.user.email
+        user = get_object_or_404(CustomUser, email=email)
+        
+        coupon_code = request.POST.get('couponCode', '')
+        coupon_check = Coupon.objects.filter(code=coupon_code, is_active=True).first()
+
+        if coupon_check:
+            if CouponUsage.objects.filter(user=user, coupon=coupon_check).exists():
+                return JsonResponse({'error': 'Coupon Already Applied'})
+
+            if coupon_check.user_count < coupon_check.usage_limit:
+                cart_total = sum(Cart.objects.filter(user=user).values_list("cart_price", flat=True))
+                if cart_total >= coupon_check.minimum_purchase:
+                    if coupon_check.exp_date < timezone.now().date():
+                        return JsonResponse({'error': 'Coupon Expired'})
+                    
+                    total = cart_total - coupon_check.discount_price
+                    request.session['final_amount'] = int(total)
+                    
+                    response_data = {
+                        'success': 'Apply Successfully',
+                        'total': total,
+                        'coupon_code': coupon_code,
+                        'discount_amount': coupon_check.discount_price,
+                    }
+                    
+                    coupon_check.user_count += 1
+                    coupon_check.save()
+                    
+                    # Store coupon ID in session
+                    request.session['coupon_id'] = coupon_check.id
+
+                    CouponUsage.objects.create(user=user, coupon=coupon_check)
+                    return JsonResponse(response_data)
+                else:
+                    return JsonResponse(
+                        {"error": f"Minimum Purchase Amount {round(coupon_check.minimum_purchase)} Required"}
+                    )
+            else:
+                return JsonResponse({'error': "This code reached its usage limit."})
+        else:
+            return JsonResponse({"error": "Invalid Coupon."})
+              
+    return JsonResponse({'error': 'Invalid Request.'})
+
+
+
+
+# @login_required
+# def remove_coupon(request):
+#     email = request.user.email
+#     user = get_object_or_404(CustomUser, email=email)
+    
+#     coupon_code = request.POST.get('couponCode', '')
+#     coupon_check = Coupon.objects.filter(code=coupon_code, is_active=True).first()
+    
+#     if coupon_check:
+#         usage_check = CouponUsage.objects.filter(user=user, coupon=coupon_check).first()
+#         if usage_check:
+#             coupon_check.user_count -= 1
+#             coupon_check.save()
+#             usage_check.delete()
+        
+#         # Remove coupon ID from session
+#         if 'coupon_id' in request.session:
+#             del request.session['coupon_id']
+
+#     total = sum(Cart.objects.filter(user=user).values_list("cart_price", flat=True))
+    
+#     response_data = {
+#         "total": total,
+#         "success": "removed"
+#     }
+#     return JsonResponse(response_data)
+
+    

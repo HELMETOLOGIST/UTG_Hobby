@@ -2859,6 +2859,7 @@ ul {
   margin-bottom: 20px;
   -webkit-transition: 0.5s;
   transition: 0.5s;
+  border-radius: 0px 0px 30px 30px;
 }
 
 @media (max-width: 991px) {
@@ -2878,9 +2879,10 @@ ul {
 /* line 66, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
 .single_product_item .single_product_text {
   padding: 32px 0;
-  background-color: #0000007a;
+  background-color: #e5e5e5;
   -webkit-transition: 0.5s;
   transition: 0.5s;
+  border-radius: 0px 0px 30px 30px
 }
 
 /* line 71, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
@@ -2888,12 +2890,14 @@ ul {
   font-weight: 700;
   font-size: 18px;
   margin-bottom: 14px;
+  border-radius: 0px 0px 30px 30px
 }
 
 /* line 77, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
 .single_product_item .single_product_text h3 {
   font-weight: 300;
   font-size: 18px;
+  border-radius: 0px 0px 30px 30px
 }
 
 /* line 82, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
@@ -2908,6 +2912,7 @@ ul {
   visibility: hidden;
   -webkit-transition: 0.5s;
   transition: 0.5s;
+  border-radius: 0px 0px 30px 30px
 }
 
 /* line 93, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
@@ -2915,12 +2920,13 @@ ul {
   float: right;
   font-size: 18px;
   line-height: 26px;
-  color: #000;
+  color: #ff2f2f;
+  border-radius: 0px 0px 30px 30px
 }
 
 /* line 102, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
 .single_product_item:hover {
-  box-shadow: 0px 10px 20px 0px rgba(0, 23, 51, 0.09);
+  box-shadow: 0px 10px 20px 0px rgba(252, 198, 2, 0.612);
 }
 
 /* line 105, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product_list.scss */
@@ -4874,7 +4880,7 @@ ul {
 .cupon_area input {
   margin-left: 30px;
   max-width: 730px;
-  width: 100%;
+  width: 95%;
   display: block;
   height: 40px;
   border-radius: 3px;
@@ -8536,5 +8542,50 @@ to {
 -webkit-animation-name: slideInRight;
 animation-name: slideInRight;
 }
+
+
+/* filter area */
+.left_widgets.p_filter_widgets {
+  background-color: #e5e5e5;  /* Light gray background */
+  border: 0px solid #ddd;  /* Light border */
+  padding: 20px;  /* Padding for content */
+  margin-bottom: 0px;  /* Spacing below */
+}
+
+.left_widgets .l_w_title {
+  margin-bottom: 15px;  /* Spacing between title and list */
+}
+
+.left_widgets .list {
+  list-style: none;  /* Remove default list bullets */
+  margin: 0;  /* Remove default list margins */
+  padding: 0;  /* Remove default list padding */
+}
+
+.left_widgets .list h4 {
+  margin-bottom: 10px;  /* Spacing between headings and items */
+  font-weight: bold;  /* Bold headings */
+}
+
+.left_widgets .list li {
+  margin-bottom: 5px;  /* Spacing between list items */
+}
+
+.left_widgets .list label {
+  display: block;  /* Display labels on separate lines */
+  font-weight: normal;  /* Normal font weight for labels */
+}
+
+.left_widgets .btn-success {
+  background-color: #5cb85c;  /* Green button background */
+  border-color: #4cae4c;  /* Green button border */
+  color: #fff;  /* White button text */
+  font-weight: bold;  /* Bold button text */
+}
+
+/* address in checkout */
+ 
+/* slider css */
+/* Import Google Font - Poppins */
 
 /*# sourceMappingURL=style.css.map */

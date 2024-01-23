@@ -10,6 +10,5 @@ urlpatterns = [
     path('add_address_checkout/',views.add_address_checkoutt,name='add_address_checkout'),
     path('edit_addresss/<str:id>',views.edit_addressss,name='edit_addresss'),
     path('delete_address/<str:id>',views.delete_addresss,name='delete_addresss'),
-    
 
 ]

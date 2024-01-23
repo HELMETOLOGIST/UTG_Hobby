@@ -30,8 +30,7 @@ from django.db.models import Sum, F, Count, ExpressionWrapper, DecimalField
 import xlwt
 import datetime
 from django.db.models.functions import TruncMonth, TruncYear
-
-
+from user_coupon.models import Coupon, CouponUsage
 # Create your views here.
 ############################## User Management ##############################
 
@@ -448,7 +447,7 @@ def dashboardd(request):
     weekday_orders = []
 
     for days_ago in range(6, -1, -1):  # Start from 6 days ago and go backward to 0 (today)
-        start_date = chart_end_time - timedelta(days=days_ago)
+        start_date = chart_end_time - timedelta(days=days_ago+1)
         end_date = start_date + timedelta(days=1)
 
         # Fetch the count of OrderItem objects for the specified date range
@@ -489,7 +488,7 @@ def dashboardd(request):
 
     # Pass the order counts and other context data to the template
     context = {
-        'revenue': int(revenue),
+        'revenue': revenue,
         'users': users,
         'orders': orders.count(),
         'start_time': start_time,
@@ -536,7 +535,7 @@ def sales_report(request):
 def excel_report(request):
     response = HttpResponse(content_type="application/ms-excel")
     response["Content-Disposition"] = (
-        "attachment; filename=SalesReport-" + str(datetime.now()) + "-.xls"
+        "attachment; filename=SalesReport-" + str(datetime.datetime.now()) + "-.xls"
     )
     work_b = xlwt.Workbook(encoding="utf-8")
     work_s = work_b.add_sheet("SalesReport")
@@ -563,10 +562,10 @@ def excel_report(request):
     end_date = request.GET.get('end_date')
     
     if not start_date:
-        start_date = datetime.now() - timedelta(days=3 * 365)
+        start_date = datetime.datetime.now() - timedelta(days=3 * 365)
         
     if not end_date:
-        end_date = datetime.now()
+        end_date = datetime.datetime.now()
         
     orders = (
     Order.objects.all()
@@ -611,9 +610,9 @@ class DownloadPDF(View):
         start_date = request.GET.get("start_date")
         end_date = request.GET.get("end_date")
         if start_date == "":
-            start_date = datetime.now() - timedelta(days=3 * 365)
+            start_date = datetime.datetime.now() - timedelta(days=3 * 365)
         if end_date == "":
-            end_date = datetime.now()
+            end_date = datetime.datetime.now()
         
         orders = (Order.objects.all().order_by("-order_date").filter(order_date__range=[start_date, end_date]))
         
@@ -632,7 +631,7 @@ class DownloadPDF(View):
         pdf = render_to_pdf("admin_side/sales_report_pdf.html", data)
         
         response = HttpResponse(pdf, content_type="application/pdf")
-        filename = f"Sales_report_{datetime.now()}.pdf"
+        filename = f"Sales_report_{datetime.datetime.now()}.pdf"
         content = "attachment; filename=%s" % (filename)
         response["Content-Disposition"] = content
         return response
@@ -709,3 +708,95 @@ def banner_status(request,id):
         banner.is_listed = True
         banner.save()
     return redirect('banner')
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def coupon(request):
+    coupons = Coupon.objects.all().order_by("id")
+    context = {
+        "coupons":coupons,
+    }
+    return render(request, 'admin_side/coupon.html', context)
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def add_coupon(request):
+    if request.method == "POST":
+        name = request.POST["name"]
+        code = request.POST["code"]
+        discount_price = request.POST["discount_price"]
+        minimum_purchase = request.POST["minimum_purchase"]
+        exp_date = request.POST["exp_date"]
+        usage_limit = request.POST["usage_limit"]
+        
+        if Coupon.objects.filter(name=name).exists():
+            messages.error(request, "Name already added")
+            return redirect("coupon")
+
+        if Coupon.objects.filter(code=code).exists():
+            messages.error(request,"Code is already added")
+            return redirect("coupon")
+        
+        Coupon.objects.create(
+            name = name,
+            code = code,
+            discount_price = int(discount_price),
+            minimum_purchase = float(minimum_purchase),
+            exp_date = exp_date,
+            usage_limit = int(usage_limit),
+        )
+        return redirect("coupon")
+    
+    return render(request, 'admin_side/add_coupon.html')
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def edit_coupon(request,id):
+    coupon = Coupon.objects.filter(id=id).first()
+    if request.method == "POST":
+        name = request.POST["name"]
+        code = request.POST["code"]
+        discount_price = request.POST["discount_price"]
+        minimum_purchase = request.POST["minimum_purchase"]
+        exp_date = request.POST["exp_date"]
+        usage_limit = request.POST["usage_limit"]
+        
+        if Coupon.objects.filter(name=name).exclude(id=id).exists():
+            messages.error(request,"Name already exists")
+            return redirect("edit_coupon", id=id)
+        
+        if Coupon.objects.filter(code=code).exclude(id=id).exists():
+            messages.error(request,"Code already exists")
+            return redirect("edit_coupon", id-id)
+        
+        coupon.name = name
+        coupon.code = code
+        coupon.discount_price = discount_price
+        coupon.minimum_purchase = float(minimum_purchase)
+        coupon.exp_date = exp_date
+        coupon.usage_limit = int(usage_limit)
+        coupon.save()
+        return redirect("coupon")
+        
+    context = {
+        'coupon':coupon,
+    }
+        
+    return render(request, 'admin_side/edit_coupon.html', context)
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def coupon_status(request,id):
+    coupon = Coupon.objects.filter(id=id).first()
+    if coupon.is_active == True:
+        coupon.is_active = False
+        coupon.save()
+    else:
+        coupon.is_active = True
+        coupon.save()
+    return redirect("coupon")
+    
