@@ -7,7 +7,7 @@ from user_products.models import Brands, Category, Products, Image,ColorVarient
 from django.http import JsonResponse
 from django.core import serializers
 from django.shortcuts import render, get_object_or_404
-
+from user_review.models import Review
 # Create your views here.
 
 def shops(request):
@@ -40,15 +40,45 @@ def shops(request):
     return render(request, 'shop.html', context)
 
 
-
-
-
 def products_detailss(request, id):
+    print(id)
+    email = request.user
+    print(email)
     variants = ColorVarient.objects.filter(id=id).first()
+    print(variants)
+    
+    if request.method == "POST":
+        star_rating = request.POST.get('rating')
+        item_review = request.POST.get('message')
+        
+        # Check if star_rating is a valid number
+        if star_rating and star_rating.isdigit():
+            # Convert star_rating to an integer
+            star_rating = int(star_rating)
+        else:
+            # Handle the case where star_rating is not a valid number
+            star_rating = None
+        
+        review = Review(
+            user=email,
+            variant=variants,
+            review=item_review,
+            rating=star_rating,
+        )
+        review.save()
+        
+        # Redirect to the same page to avoid form resubmission
+        return redirect('products_details', id=id)
+
+    all_rev = Review.objects.filter(variant=variants)
+        
     context = {
-        "product" : variants
+        "product": variants,
+        'review_rating': all_rev,   
     }
     return render(request, 'products_details.html', context)
+
+
 
 
 

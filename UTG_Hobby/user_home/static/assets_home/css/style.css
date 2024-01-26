@@ -8583,6 +8583,89 @@ animation-name: slideInRight;
   font-weight: bold;  /* Bold button text */
 }
 
+/* Rating */
+.checked {
+  color: orange;
+}
+  .rating {
+  margin-top: 40px;
+  border: none;
+  float: left;
+
+}
+
+.rating > label {
+   color: #9C9C9C;
+  font-size: 7px;
+  float:right;
+}
+
+
+.rating > label:before {
+  margin: 5px;
+  font-size: 2em;
+  font-family: FontAwesome;
+  content: "\f005";
+  display: inline-block;
+}
+
+.rating > input {
+  display: none;
+}
+
+.rating > input:checked ~ label,
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+  color: #F79426;
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label,
+.rating > input:checked ~ label:hover ~ label {
+  color: #FECE31;
+}
+
+
+#star{
+font-size: 10px;
+color:grey;
+}
+
+#check-star{
+font-size: 10px;
+}
+
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Star Rating CSS */
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+}
+
+.star {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url("https://media.discordapp.net/attachments/991705054828560496/1200302373676011570/pngegg_1.png?ex=65c5afb2&is=65b33ab2&hm=415e9c03d766e8720b5631657068e9874a138a7abdad85e277ad13b05f271ca8&=&format=webp&quality=lossless&width=701&height=701"); /* Initial stars */
+  background-size: cover;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked ~ .star {
+  background-image: url("https://media.discordapp.net/attachments/991705054828560496/1200064620149346354/star.png?ex=65c4d245&is=65b25d45&hm=46179d56a71ea657ee795fb0b5193b470aa8152d2bc03d6881b98b7a1f94dd5d&=&format=webp&quality=lossless&width=427&height=407"); /* Highlighted stars */
+}
+
+.star-rating input[type="radio"] {
+  opacity: 0; /* Make radio buttons invisible */
+  position: absolute; /* Remove from layout flow */
+  width: 0;
+  height: 0;
+}
 /* address in checkout */
  
 /* slider css */

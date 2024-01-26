@@ -30,6 +30,7 @@ urlpatterns = [
     path('', include('user_order.urls')),
     path('', include('user_wallet.urls')),
     path('', include('user_coupon.urls')),
+    path('', include('user_review.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 

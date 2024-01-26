@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'user_order',
     'user_coupon',
     'user_wallet',
+    'user_review',
     'admin_side',
     'django.contrib.humanize',
     

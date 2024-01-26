@@ -151,14 +151,6 @@
             aria-selected="true">Description</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-            aria-selected="false">Specification</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-            aria-selected="false">Comments</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
             aria-selected="false">Reviews</a>
         </li>
@@ -169,135 +161,10 @@
             {{ product.product.description }}
           </p>
         </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          <div class="table-responsive">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <td>
-                    <h5>Width</h5>
-                  </td>
-                  <td>
-                    <h5>128mm</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Height</h5>
-                  </td>
-                  <td>
-                    <h5>508mm</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Depth</h5>
-                  </td>
-                  <td>
-                    <h5>85mm</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Weight</h5>
-                  </td>
-                  <td>
-                    <h5>52gm</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Quality checking</h5>
-                  </td>
-                  <td>
-                    <h5>yes</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Freshness Duration</h5>
-                  </td>
-                  <td>
-                    <h5>03days</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>When packeting</h5>
-                  </td>
-                  <td>
-                    <h5>Without touch of hand</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h5>Each Box contains</h5>
-                  </td>
-                  <td>
-                    <h5>60pcs</h5>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
           <div class="row">
             <div class="col-lg-6">
               <div class="comment_list">
-              
-                <div class="review_item">
-                  <div class="media">
-                    <div class="d-flex">
-                      <img src="{% static "assets_products/img/product/single-product/review-3.png" %}" alt="" />
-                    </div>
-                    <div class="media-body">
-                      <h4>Blake Ruiz</h4>
-                      <h5>12th Feb, 2017 at 05:56 pm</h5>
-                      <a class="reply_btn" href="#">Reply</a>
-                    </div>
-                  </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="review_box">
-                <h4>Post a comment</h4>
-                <form class="row contact_form" action="contact_process.php" method="post" id="contactForm"
-                  novalidate="novalidate">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" />
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" />
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" />
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <textarea class="form-control" name="message" id="message" rows="1"
-                        placeholder="Message"></textarea>
-                    </div>
-                  </div>
-                  <div class="col-md-12 text-right">
-                    <button type="submit" value="submit" class="btn_3">
-                      Submit Now
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
           </div>
@@ -364,76 +231,50 @@
               <div class="review_list">
                 
                 <div class="review_item">
-                  <div class="media">
-                    <div class="d-flex">
-                      <img src="{% static "assets_products/img/product/single-product/review-3.png" %}" alt="" />
-                    </div>
+                  <div class="">
                     <div class="media-body">
-                      <h4>Blake Ruiz</h4>
-                      <i class="fa fa-star"></i>
-                      <i class="fa fa-star"></i>
-                      <i class="fa fa-star"></i>
-                      <i class="fa fa-star"></i>
-                      <i class="fa fa-star"></i>
+                    {% for rev in review_rating %}
+                    <div class="d-flex">
+                      <img class="rounded-circle mt-1" src="https://media.discordapp.net/attachments/991705054828560496/1200039319663026196/a2117e75dc55c149c2c68cbadee1f16e.jpg?ex=65c4bab5&is=65b245b5&hm=4eebd274a479944263804632041dfeeb8082762a3d871b8be4d2d4c7eb11a684&=&format=webp&width=711&height=701" alt="" style="width:40px;" />
+                      <h4 class="text-uppercase mt-3 ml-2">{{rev.user}}</h4>
+                    </div>
+                      {% if rev.rating > 0 %}
+                      <i class="fa fa-star {% if rev.rating < 1 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                      <i class="fa fa-star {% if rev.rating < 2 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                      <i class="fa fa-star {% if rev.rating < 3 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                      <i class="fa fa-star {% if rev.rating < 4 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                      <i class="fa fa-star {% if rev.rating < 5 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                      
+                      {% endif %}
                     </div>
                   </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo
+                  <p class="text-black">
+                    {{rev.review}}
                   </p>
+                  {% endfor %}
                 </div>
               </div>
             </div>
-            <div class="col-lg-6">
+
+
+            <div class="col-lg-12">
               <div class="review_box">
-                <h4>Add a Review</h4>
-                <p>Your Rating:</p>
-                <ul class="list">
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-star"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-star"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-star"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-star"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-star"></i>
-                    </a>
-                  </li>
-                </ul>
-                <p>Outstanding</p>
-                <form class="row contact_form" action="contact_process.php" method="post" novalidate="novalidate">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="text" class="form-control" name="name" placeholder="Your Full name" />
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="email" class="form-control" name="email" placeholder="Email Address" />
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="text" class="form-control" name="number" placeholder="Phone Number" />
-                    </div>
-                  </div>
+                <h4 class="ml-3 mt-5 mb-1">Add a Review</h4>
+                <p class="text-black ml-3 ">Your Rating:</p>
+                <form class="" action="" method="post" novalidate="novalidate"> 
+                  {% csrf_token %}
+                  <div class="star-rating ml-3">
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label class="star" for="star1" title="Awesome" aria-hidden="true"></label>
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label class="star" for="star2" title="Awesome" aria-hidden="true"></label>
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label class="star" for="star3" title="Awesome" aria-hidden="true"></label>
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label class="star" for="star4" title="Awesome" aria-hidden="true"></label>
+                    <input type="radio" id="star5" name="rating" value="5" />
+                    <label class="star" for="star5" title="Awesome" aria-hidden="true"></label>
+                </div>
                   <div class="col-md-12">
                     <div class="form-group">
                       <textarea class="form-control" name="message" rows="1" placeholder="Review"></textarea>
@@ -528,10 +369,19 @@
         });
     });
 });
-
 </script>  
-
-
-
+<script>
+  // Optional for visual feedback on click:
+  const starRating = document.querySelector('.star-rating');
+  starRating.addEventListener('click', (event) => {
+      const clickedStar = event.target;
+      if (clickedStar.tagName === 'LABEL') {
+          const input = clickedStar.previousElementSibling;
+          if (input) {
+              input.checked = !input.checked; // Toggle the checked state
+          }
+      }
+  });
   
-  {% endblock %}
+</script>
+{% endblock %}
