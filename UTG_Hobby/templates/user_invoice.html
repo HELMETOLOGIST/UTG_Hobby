@@ -101,9 +101,9 @@
                                             </div>
                                         </td>
                                         <td class="pl0">{{item.variant.product.products_name}}</td>
-                                        <td class="text-center">${{item.variant.price}}</td>
+                                        <td class="text-center"><span style='font-size:15px;'>&#8377;</span>{{item.variant.discounted_price}}</td>
                                         <td class="text-center">{{item.quantity}}</td>
-                                        <td class="text-end">${{item.price}}</td>
+                                        <td class="text-end"><span style='font-size:15px;'>&#8377;</span>{{item.price}}</td>
                                     </tr>
                                     {% endfor %}
                                 
@@ -112,7 +112,21 @@
                                         <td></td>
                                         <td></td>
                                         <td class="text-center">SubTotal</td>
-                                        <td class="text-end">${{order.total_price}}</td>
+                                        <td class="text-end"><span style='font-size:15px;'>&#8377;</span>{{order.total_price}}</td>
+                                    </tr>
+
+                                    <tr class="tr2">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                        {% if coupon %}
+                                        <td class="text-center">Coupon</td>
+                                        <td class="text-end">-{{coupon.discount_price}}<span style='font-size:15px;'>&#8377;</span></td>
+                                        {% else %}
+                                        <td class="text-center">Coupon</td>
+                                        <td class="text-end"><span style='font-size:15px;'>&#8377;</span>0</td>
+                                        {% endif %}
                                     </tr>
                                     
                                     <tr class="tr2">
@@ -120,7 +134,7 @@
                                         <td></td>
                                         <td></td>
                                         <td class="text-center f-w-600 active-color">Grand Total</td>
-                                        <td class="f-w-600 text-end active-color">${{order.total_price}}</td>
+                                        <td class="f-w-600 text-end active-color"><span style='font-size:15px;'>&#8377;</span>{{order.total_price}}</td>
                                     </tr>
                                     </tbody>
                                 </table>

@@ -2,10 +2,8 @@
 {% load static %}
 {% block title %}Shop{% endblock  %}
 
-
-<link rel="stylesheet" href="{% static 'assets_home/css/slider.css' %}" type='text/css'>
-
 {% block content %}
+<link rel="stylesheet" href="{% static 'assets_home/css/shop.css' %}" type='text/css'>
     <!--================Home Banner Area =================-->
     <!-- breadcrumb start-->
     <section class="breadcrumb breadcrumb_bg">
@@ -28,13 +26,26 @@
     <section class="cat_product_area section_padding">
         <div class="container">
             <div class="row">
-
-                <div class="col-lg-3">
-                    <div class="left_sidebar_area">
-                        <aside class="left_widgets p_filter_widgets">
-                            <div class="l_w_title">
-                            </div>
-                            <div class="widgets_inner">
+                <div class="container">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header">
+                       <button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn" onclick="changeBtnTxt()"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button> 
+                       
+                       <div class="ml-auto mt-3 mr-2">
+                          <nav aria-label="Page navigation example">
+                             <ul class="pagination">
+                                <li class="page-item"> <a class="page-link" href="#" aria-label="Previous"> <span aria-hidden="true" class="font-weight-bold">&lt;</span> <span class="sr-only">Previous</span> </a> </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">..</a></li>
+                                <li class="page-item"><a class="page-link" href="#">24</a></li>
+                                <li class="page-item"> <a class="page-link" href="#" aria-label="Next"> <span aria-hidden="true" class="font-weight-bold">&gt;</span> <span class="sr-only">Next</span> </a> </li>
+                             </ul>
+                          </nav>
+                       </div>
+                    </div>
+                    <div id="content" class="my-5 ">
+                        <div id="filterbar" class="collapse">
+                           
+                            <div class="widgets_inner mt-4">
                                 <form id="filter-form">
                                     {% csrf_token %}
                                     <ul class="list" id="category-list">
@@ -58,10 +69,10 @@
                                         {% if Bran_list %}
                                         {% for bran in Bran_list %}
                                         <li>
-                                                    <label>
-                                                        <input type="checkbox" name="selected_brands" value="{{ bran.id }}">
-                                                        {{ bran.name }}
-                                                </label>
+                                            <label>
+                                                <input type="checkbox" name="selected_brands" value="{{ bran.id }}">
+                                                {{ bran.name }}
+                                            </label>
                                         </li>
                                         {% endfor %}
                                         {% else %}
@@ -71,34 +82,32 @@
                                     <button type="submit" class="btn_3 btn-primary ml-5 mt-4">Apply</button>
                                 </form>
                             </div>
-                        </aside>
-                    
-                        <aside class="left_widgets p_filter_widgets price_rangs_aside">
-                            
-                        </aside>
-                    </form>
-                    </div>
-                </div>
-                
-                
-                    <div class="col-lg-9">
-                        <div class="row">
-                        <div class="col-lg-12">
-                        </div>
-                    </div>
-                    
-                    <!--Product listing-->
-                    <div class="row product-list">
-                        {% for var in variants %}
-                            <div class="col-lg-4 col-sm-6 product_data">
+
+
+                          </div>
+                       </div>
+                       <div id="products">
+                           <div class="row mx-0">
+                              {% for var in variants %}
+                              <div class="col-lg-4 col-sm-6 product_data">
                                 <div class="single_product_item">
                                     <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt=""/></a>
                                     <div class="single_product_text">
-                                        <h4 class="ml-4">{{ var.product.products_name }}</h4>
+                                        <div class="d-flex justify-content-between">
+                                            <h4 class="ml-4">{{ var.product.products_name }}</h4>
+                                            {% if var.product_offer %}
+                                                <h4 class="mr-4"><span class="text-danger">{{ var.product_offer|floatformat:0 }}</span>% OFF</h4>
+                                            {% endif %}
+                                        </div>
                                         <p class="ml-4 text-black">Brand: {{ var.product.brand_id.name }}</p>
                                         <p class="ml-4 text-black">Color: {{ var.color }}</p1>
-                                        <h3 class="ml-4">${{ var.price }}</h3>
-                                        
+                                        {% if var.product_offer %}
+                                        <h3 class="del ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.price }}</h3>
+                                        <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.discounted_price }}</h3>
+                                        {% else %}
+                                        <div type="hidden"><h3 class="ml-4 del text-black">Offer</h3></div>
+                                        <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.price }}</h3>
+                                        {% endif %}
                                         {% csrf_token %}
                                         <input type="hidden" id="product-id" value="{{var.id}}" class="prod_id">
                                         {% if var.quantity > 0 %}
@@ -106,83 +115,19 @@
                                         {% else %}
                                         <a> OUT OF STOCK<i class="ti-heart"></i></a>
                                         {% endif %}
-                                        
+                                      </div>
                                     </div>
                                 </div>
-                            </div>
-                            {% if forloop.counter|divisibleby:3 and not forloop.last %}
-                                </div><div class="row">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                        <!--Product listing End-->
-                        
-                        <div class="col-lg-12">
-                            <div class="pageination">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item">
-                                            {% if homeVariant.has_previous %}
-                                            <a class="page-link" href="?page={{homeVariant.previous_page_number}}" aria-label="Previous">
-                                                <i class="ti-angle-double-left"></i>
-                                            </a>
-                                        </li>
-                                        {% endif %}
-                                        {% for i in homeVariant.paginator.page_range %}
-                                        
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">6</a></li>
-                                        <li class="page-item">
-                                            {% endfor %}
-                                            <a class="page-link" href="#" aria-label="Next">
-                                                <i class="ti-angle-double-right"></i>
-                                            </a>
-                                            
-                                        </li>
-                                    </ul>
-                                </nav>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+                 </div>
             </div>
         </div>
     </section>
-    <!--================End Category Product Area =================-->
-
-    {% comment %} <section class="product_list best_seller section_padding">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-12">
-                    <div class="section_tittle text-center">
-                        <h2>Best Sellers <span>shop</span></h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row align-items-center justify-content-between">
-                <div class="col-lg-12">
-                    <div class="best_product_slider owl-carousel">
-                        {% for var in variants %}
-                        <div class="single_product_item">
-                            <a href="../products_details/{{var.id}}"><img src="{{var.images.all.last.image.url}}" alt="" /></a>
-                            <div class="single_product_text">
-                                <h4>{{var.product.products_name}}</h4>
-                                <p>Category: {{ var.product.category_id.name }}</p>
-                                <p>Brand: {{ var.product.brand_id.name }}</p>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> {% endcomment %}
-
-    <!-- product_list part end-->
+   
     
     <script src="{% static "assets_home/js/price_rangs.js" %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -246,10 +191,13 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
-    <script>
- 
-    </script>
 
+    {% comment %} shop new cdn {% endcomment %}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.7.2/css/all.css"></script>
+    <script src="{% static 'assets_home/js/shop.js' %}"></script>
 
 <!-- shop.html -->
 

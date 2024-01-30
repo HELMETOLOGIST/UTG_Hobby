@@ -5,6 +5,7 @@ from user_cart.models import *
 from user_profile.models import *
 from user_products.models import *
 import uuid
+from user_coupon.models import *
 # Create your models here.
 
 class Order(models.Model):
@@ -17,6 +18,8 @@ class Order(models.Model):
     expected_date = models.DateField(null=True, blank=True)
     delivery_date = models.DateField(null=True, blank=True)
     total_price = models.DecimalField(max_digits=10, null=False, decimal_places=2)
+    applied_coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    applied_offer = models.ForeignKey(ColorVarient, on_delete=models.SET_NULL, null=True, blank=True)
     
     def save(self, *args, **kwargs):
         if not self.order_id:

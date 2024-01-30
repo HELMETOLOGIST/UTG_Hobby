@@ -82,8 +82,16 @@
           <div class="col-lg-5 col-xl-5">
               <div class="s_product_text">
                   <h3>{{ product.product.products_name }}</h3>
-                  <h2>${{ product.price }}</h2>
-                  <ul class="list">
+                  <h2><span style='font-size:20px;'>&#8377;</span>{{ product.discounted_price }}</h2>
+                  <h4>
+                    <span style='font-size:20px;'>&#8377;</span>
+                    <s>{{ product.price }}</s>
+                  </h4>                  <ul class="list">
+                    <li>
+                      <a href="#" class="text-uppercase text-danger">
+                          <span>Offer</span> : {{ product.product_offer|floatformat:0 }}%
+                      </a>
+                  </li>
                       <li>
                           <a href="#">
                               <span>Category</span> : {{ product.product.category_id.name }}
@@ -115,7 +123,6 @@
                                   {% for v in product.product.colorvarient_set.all %}
                                       <a href="../../products_details/{{v.id}}"  data-color-variant-id="{{ v.id }}"><img src="{{v.images.last.image.url}}" alt="{{v.color}}" class="color-thumbnail border-2 " height='70px'></a>
                                   {% endfor %}
-                              
                               </div>
                           </div>
                       </li>
@@ -263,18 +270,18 @@
                 <p class="text-black ml-3 ">Your Rating:</p>
                 <form class="" action="" method="post" novalidate="novalidate"> 
                   {% csrf_token %}
-                  <div class="star-rating ml-3">
-                    <input type="radio" id="star1" name="rating" value="1" />
-                    <label class="star" for="star1" title="Awesome" aria-hidden="true"></label>
-                    <input type="radio" id="star2" name="rating" value="2" />
-                    <label class="star" for="star2" title="Awesome" aria-hidden="true"></label>
-                    <input type="radio" id="star3" name="rating" value="3" />
-                    <label class="star" for="star3" title="Awesome" aria-hidden="true"></label>
-                    <input type="radio" id="star4" name="rating" value="4" />
-                    <label class="star" for="star4" title="Awesome" aria-hidden="true"></label>
+                  <div class="rating ml-3">
                     <input type="radio" id="star5" name="rating" value="5" />
-                    <label class="star" for="star5" title="Awesome" aria-hidden="true"></label>
-                </div>
+                    <label for="star5"></label>
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label for="star4"></label>
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label for="star3"></label>
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label for="star2"></label>
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label for="star1"></label>
+                  </div>
                   <div class="col-md-12">
                     <div class="form-group">
                       <textarea class="form-control" name="message" rows="1" placeholder="Review"></textarea>
@@ -371,17 +378,18 @@
 });
 </script>  
 <script>
-  // Optional for visual feedback on click:
-  const starRating = document.querySelector('.star-rating');
-  starRating.addEventListener('click', (event) => {
+  document.addEventListener('DOMContentLoaded', function() {
+    // Optional for visual feedback on click:
+    const starRating = document.querySelector('.rating');
+    starRating.addEventListener('click', (event) => {
       const clickedStar = event.target;
       if (clickedStar.tagName === 'LABEL') {
-          const input = clickedStar.previousElementSibling;
-          if (input) {
-              input.checked = !input.checked; // Toggle the checked state
-          }
+        const input = clickedStar.previousElementSibling;
+        if (input) {
+          input.checked = !input.checked; // Toggle the checked state
+        }
       }
+    });
   });
-  
 </script>
 {% endblock %}

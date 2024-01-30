@@ -37,4 +37,9 @@ urlpatterns = [
     path('add_coupon',views.add_coupon,name='add_coupon'), 
     path('edit_coupon/<str:id>/',views.edit_coupon,name='edit_coupon'), 
     path('coupon_status/<str:id>/',views.coupon_status,name='coupon_status'),
+    path('offers/',views.offers,name='offers'),
+    path('add_offer/',views.add_offer,name='add_offer'),
+    path('edit_offer/<str:id>/',views.edit_offer,name='edit_offer'),
+    path('offer_delete/<str:id>/',views.offer_delete,name='offer_delete'),
+    
 ]

@@ -57,12 +57,12 @@
                     <div class="col-md-3">
                       <p class="text-muted mb-5">Order Status:</p>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                       <p class="text-primary mt-0 mb-0 small ms-xl-0">{{order.status}}</p>
                       {% if order.status == 'Order Confirmed' %}
-                      <a class="btn_3 ml-5 mr-3 d-flex align-items-center cancel-order-btn" href="../../cancel_order/{{order.id}}">Cancel Order</a>
+                      <a class="btn_3 ml-5 d-flex align-items-center cancel-order-btn" href="../../cancel_order/{{order.id}}">Cancel Order</a>
                       {% else %}
-                      <a class="btn_3 ml-5 mr-5 d-flex align-items-center disabled-link">Canceled</a>
+                      <a class="btn_3 ml-5 d-flex align-items-center  disabled-link">Canceled</a>
                       {% endif %}
 
                       <div class="d-flex justify-content-around mb-1 mr-5">

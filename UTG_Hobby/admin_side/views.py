@@ -552,47 +552,54 @@ def excel_report(request):
         "Quantity",
         "Price",
         "Payment Mode",
+        "Total Price",  # Add the "Total Price" column
     ]
-    
+
     for column_num in range(len(columns)):
-        work_s.write(row_num, column_num,columns[column_num], font_style)
+        work_s.write(row_num, column_num, columns[column_num], font_style)
     font_style = xlwt.XFStyle()
-    
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    
+
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
     if not start_date:
         start_date = datetime.datetime.now() - timedelta(days=3 * 365)
-        
+
     if not end_date:
         end_date = datetime.datetime.now()
-        
+
     orders = (
-    Order.objects.all()
-    .order_by("-order_date")
-    .filter(order_date__range=[start_date, end_date])
-    .values_list(
-        # Use the correct field name here (e.g., "orderitem__variant__product__products_name")
-        "order_id",
-        "user__first_name",
-        "order_date__date",
-        "order_date__time",
-        "orderitem__variant__product__products_name",  # Assuming the correct field is "orderitem"
-        "orderitem__variant__color",
-        "orderitem__quantity",
-        "orderitem__price",
-        "payment_mode",
+        Order.objects.all()
+        .order_by("-order_date")
+        .filter(order_date__range=[start_date, end_date])
+        .values_list(
+            # Use the correct field name here (e.g., "orderitem__variant__product__products_name")
+            "order_id",
+            "user__first_name",
+            "order_date__date",
+            "order_date__time",
+            "orderitem__variant__product__products_name",  # Assuming the correct field is "orderitem"
+            "orderitem__variant__color",
+            "orderitem__quantity",
+            "orderitem__price",
+            "payment_mode",
+        )
     )
-)
-    
+
+    total_price = 0  # Initialize total price
     for order in orders:
         row_num += 1
         for col_num in range(len(order)):
             work_s.write(row_num, col_num, str(order[col_num]), font_style)
+        total_price += order[7]  # Add the price of each order to the total
+
+    # Write the total price in the last row
+    work_s.write(row_num + 1, 8, str(total_price), font_style)
 
     work_b.save(response)
 
     return response
+
     
  
 def render_to_pdf(template_src, context_dict={}):
@@ -613,9 +620,12 @@ class DownloadPDF(View):
             start_date = datetime.datetime.now() - timedelta(days=3 * 365)
         if end_date == "":
             end_date = datetime.datetime.now()
-        
-        orders = (Order.objects.all().order_by("-order_date").filter(order_date__range=[start_date, end_date]))
-        
+
+        orders = Order.objects.all().order_by("-order_date").filter(order_date__range=[start_date, end_date])
+
+        # Calculate the total price
+        total_price = sum(order.total_price for order in orders)
+
         data = {
             "company": "UTG Hobby",
             "address": start_date,
@@ -626,15 +636,17 @@ class DownloadPDF(View):
             "phone": end_date,
             "email": "nijithckv2001@gmail.com",
             "website": "utghobby.com",
+            "total_price": total_price,  # Pass the total price to the context
         }
-        
+
         pdf = render_to_pdf("admin_side/sales_report_pdf.html", data)
-        
+
         response = HttpResponse(pdf, content_type="application/pdf")
         filename = f"Sales_report_{datetime.datetime.now()}.pdf"
         content = "attachment; filename=%s" % (filename)
         response["Content-Disposition"] = content
         return response
+
     
     
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -799,4 +811,53 @@ def coupon_status(request,id):
         coupon.is_active = True
         coupon.save()
     return redirect("coupon")
-    
+
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def offers(request):
+    variant = ColorVarient.objects.filter(product_offer__gt=0)
+    return render(request, 'admin_side/offer.html', {'variant':variant})
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def add_offer(request):
+    products = ColorVarient.objects.all().order_by('id')
+    if request.method == "POST":
+        product = request.POST.get('product')
+        discount =request.POST.get('discount')
+        
+        variant = get_object_or_404(ColorVarient, id=product)
+        variant.product_offer = discount
+        variant.save()
+        return redirect('offers')
+    return render(request, 'admin_side/add_offer.html', {'products':products})
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def edit_offer(request,id):
+    product = ColorVarient.objects.all().order_by('id')
+    item = get_object_or_404(ColorVarient, id=id)
+    if request.method == "POST":
+        discount = request.POST.get('discount')
+        
+        item.product_offer = discount
+        item.save()
+        return redirect('offers')
+    return render(request, 'admin_side/edit_offer.html', {'item':item,'products':product})
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def offer_delete(request,id):
+    item = get_object_or_404(ColorVarient, id=id)
+    item.product_offer = 0
+    item.save()
+    return redirect('offers')

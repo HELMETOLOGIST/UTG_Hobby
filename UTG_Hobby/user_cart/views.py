@@ -17,6 +17,9 @@ def cartt(request):
     cart_item = Cart.objects.filter(user=user).order_by('id')
     subPrice = cart_item.values_list("cart_price", flat=True)
     total = sum(subPrice)
+    if 'coupon_id' in request.session:
+        del request.session['coupon_id']
+    print(total)
     context = {
         "cart_items":cart_item,
         "total":total,
@@ -41,7 +44,7 @@ def addcartt(request):
                     user=user,
                     product=product,
                     prod_quantity=prod_q,
-                    cart_price=product.price,
+                    cart_price=product.discounted_price(),
                 )
                 cart_count = Cart.objects.filter(user=user).count()
                 return JsonResponse(
@@ -100,7 +103,8 @@ def update_cartt(request):
                 cart.prod_quantity = 1
                 cart.save()
 
-        priceOfInstance = varient_obj.price
+        priceOfInstance = varient_obj.discounted_price()
+        print(priceOfInstance)
         prodtotal = cart.prod_quantity * priceOfInstance
         cart.cart_price = prodtotal
         cart.save()

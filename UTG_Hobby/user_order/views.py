@@ -124,7 +124,7 @@ def place_orderr(request):
                                 address=delivery_address,
                                 payment_mode=payment_mode,
                                 quantity=0,
-                                total_price = final_amount if 'final_amount' in request.session else total_price,
+                                total_price = final_amount if 'final_amount' in request.session else total_price
                             )
 
                             # Create OrderItem instances
@@ -154,7 +154,7 @@ def place_orderr(request):
                                 'currency': 'INR',
                                 'receipt': str(order.order_id),
                             }
-                            
+
                             razorpay_order = client.order.create(data=razorpay_order_data)
                             print(razorpay_order)
                             response_data = {
@@ -165,12 +165,14 @@ def place_orderr(request):
                             return JsonResponse(response_data)
 
                     except Exception as e:
-                        print('Error occurred while placing the order:', e)
+                        print('Error occurred while placing the order. Exception Type:', type(e).__name__)
+                        print('Exception Value:', str(e))
                         response_data = {
                             'success': False,
                             'message': 'An error occurred while processing your order'
                         }
                         return JsonResponse(response_data)
+
                           
                 else:
                     response_data = {
@@ -355,8 +357,7 @@ def order_detailss(request, order_id):
     if request.user.is_authenticated:
         order = get_object_or_404(Order, order_id=order_id, user=request.user)
         order_items = OrderItem.objects.filter(order=order)
-
-        
+                
         product_ids = [item.variant.product.id for item in order_items]
         print(order_items)
         context = {
@@ -373,6 +374,9 @@ def order_detailss(request, order_id):
 def invoice(request):
     if request.user.is_authenticated:
         order_id = request.session.get('order_id')
+        coupon_id = request.session.get('coupon_id')
+        if coupon_id:
+            coupon = get_object_or_404(Coupon, id=coupon_id)
         
         if order_id:
             order = get_object_or_404(Order, order_id=order_id)
@@ -380,7 +384,11 @@ def invoice(request):
             context = {
                 "order": order,
                 "order_items": order_items,
+                "coupon": coupon if coupon_id else None,
             }
+            
+            
+            
             return render(request, 'invoice.html', context)
         else:
             messages.error(request, 'Invalid or missing order ID in session.')
@@ -389,16 +397,20 @@ def invoice(request):
 @login_required
 def user_invoicee(request,order_id):
     if request.user.is_authenticated:
+        coupon_id = request.session.get('coupon_id')
         order = get_object_or_404(Order, order_id=order_id, user=request.user)
-        print(order)
         order_items = OrderItem.objects.filter(order=order)
-
+        
+        if coupon_id:
+            coupon = get_object_or_404(Coupon, id=coupon_id)
+        
         product_ids = [item.variant.product.id for item in order_items]
         print(order_items)
         context = {
             "order": order,
             "order_items": order_items,
             "product_ids": product_ids,
+            "coupon": coupon if coupon_id else None,
         }
 
         return render(request, 'user_invoice.html', context)

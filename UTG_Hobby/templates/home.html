@@ -146,7 +146,7 @@
                                         <h4 class="ml-4"> {{ var.product.products_name }}</h4>
                                         <p class="ml-4 text-black"> Brand: {{ var.product.brand_id.name }}</p>
                                         <p class="ml-4 text-black"> Color: {{ var.color }}</p1>
-                                        <h3 class="ml-4"> ${{ var.price }}</h3>
+                                        <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.price }}</h3>
                                         {% csrf_token %}
                                         <input type="hidden" id="product-id" value="{{var.id}}" class="prod_id">
                                         {% if var.quantity > 0 %}
@@ -263,15 +263,15 @@
 									<div class="row justify-content-center">
 										<div class="col-lg-8 mx-auto">
 											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+												<blockquote class="mb-5 text-black">
+													<p class="text-black">&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
 												</blockquote>
 												<div class="author-info">
 													<div class="author-pic">
-														<img src="{% static "assets_home/img/person-1.png" %}" alt="Maria Jones" class="img-fluid">
+														<img src="{% static "assets_home/img/" %}" alt="DP" class="img-fluid">
 													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+													<h3 class="font-weight-bold">Nijith</h3>
+													<span class="position d-block mb-3">CEO, Co-Founder, UTG Hobby.</span>
 												</div>
 											</div>
 										</div>
