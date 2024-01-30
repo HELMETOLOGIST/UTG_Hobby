@@ -152,154 +152,93 @@
   <!--================Product Description Area =================-->
   <section class="product_description_area">
     <div class="container">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-            aria-selected="true">Description</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-            aria-selected="false">Reviews</a>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-          <p>
-            {{ product.product.description }}
-          </p>
-        </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="comment_list">
-              </div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                   aria-selected="true">Description</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+                   aria-selected="false">Reviews</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <p>
+                  {{ product.product.description }}
+                </p>
             </div>
-          </div>
-        </div>
-        <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="row total_rate">
-                <div class="col-6">
-                  <div class="box_total">
-                    <h5>Overall</h5>
-                    <h4>4.0</h4>
-                    <h6>(03 Reviews)</h6>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="rating_list">
-                    <h3>Based on 3 Reviews</h3>
-                    <ul class="list">
-                      <li>
-                        <a href="#">5 Star
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i> 01</a>
-                      </li>
-                      <li>
-                        <a href="#">4 Star
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i> 01</a>
-                      </li>
-                      <li>
-                        <a href="#">3 Star
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i> 01</a>
-                      </li>
-                      <li>
-                        <a href="#">2 Star
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i> 01</a>
-                      </li>
-                      <li>
-                        <a href="#">1 Star
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i> 01</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="review_list">
-                
-                <div class="review_item">
-                  <div class="">
-                    <div class="media-body">
-                    {% for rev in review_rating %}
-                    <div class="d-flex">
-                      <img class="rounded-circle mt-1" src="https://media.discordapp.net/attachments/991705054828560496/1200039319663026196/a2117e75dc55c149c2c68cbadee1f16e.jpg?ex=65c4bab5&is=65b245b5&hm=4eebd274a479944263804632041dfeeb8082762a3d871b8be4d2d4c7eb11a684&=&format=webp&width=711&height=701" alt="" style="width:40px;" />
-                      <h4 class="text-uppercase mt-3 ml-2">{{rev.user}}</h4>
+            <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                <div class="row justify-content-between"> <!-- Added justify-content-between class -->
+                    <div class="col-lg-6">
+                        <div class="row total_rate">
+                            <div class="col-6">
+                                <div class="box_total">
+                                    <h5>Overall</h5>
+                                    <h4>4.0</h4>
+                                    <h6>(03 Reviews)</h6>
+                                </div>
+                            </div>
+                            <div class="review_list">
+                                <div class="review_item">
+                                  <div class="media-body">
+                                  {% for rev in review_rating %}
+                                  <div class="d-flex">
+                                    <img class="rounded-circle mt-1" src="https://media.discordapp.net/attachments/991705054828560496/1200039319663026196/a2117e75dc55c149c2c68cbadee1f16e.jpg?ex=65c4bab5&is=65b245b5&hm=4eebd274a479944263804632041dfeeb8082762a3d871b8be4d2d4c7eb11a684&=&format=webp&width=711&height=701" alt="" style="width:40px;" />
+                                    <h4 class="text-uppercase mt-3 ml-2">{{rev.user}}</h4>
+                                  </div>
+                                    {% if rev.rating > 0 %}
+                                    <i class="fa fa-star {% if rev.rating < 1 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                                    <i class="fa fa-star {% if rev.rating < 2 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                                    <i class="fa fa-star {% if rev.rating < 3 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                                    <i class="fa fa-star {% if rev.rating < 4 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                                    <i class="fa fa-star {% if rev.rating < 5 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
+                                    {% endif %}
+                                  </div>
+                                <p class="text-black mr-3">
+                                  {{rev.review}}
+                                </p>
+                                {% endfor %}
+                              </div>
+                            </div>
+                          </div>
                     </div>
-                      {% if rev.rating > 0 %}
-                      <i class="fa fa-star {% if rev.rating < 1 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
-                      <i class="fa fa-star {% if rev.rating < 2 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
-                      <i class="fa fa-star {% if rev.rating < 3 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
-                      <i class="fa fa-star {% if rev.rating < 4 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
-                      <i class="fa fa-star {% if rev.rating < 5 %} no-checked {% else %} checked {% endif %}" id="check-star"></i>
-                      
-                      {% endif %}
-                    </div>
-                  </div>
-                  <p class="text-black">
-                    {{rev.review}}
-                  </p>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
 
-
-            <div class="col-lg-12">
-              <div class="review_box">
-                <h4 class="ml-3 mt-5 mb-1">Add a Review</h4>
-                <p class="text-black ml-3 ">Your Rating:</p>
-                <form class="" action="" method="post" novalidate="novalidate"> 
-                  {% csrf_token %}
-                  <div class="rating ml-3">
-                    <input type="radio" id="star5" name="rating" value="5" />
-                    <label for="star5"></label>
-                    <input type="radio" id="star4" name="rating" value="4" />
-                    <label for="star4"></label>
-                    <input type="radio" id="star3" name="rating" value="3" />
-                    <label for="star3"></label>
-                    <input type="radio" id="star2" name="rating" value="2" />
-                    <label for="star2"></label>
-                    <input type="radio" id="star1" name="rating" value="1" />
-                    <label for="star1"></label>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <textarea class="form-control" name="message" rows="1" placeholder="Review"></textarea>
+                    <div class="col-lg-12">
+                        <div class="d-flex flex-column align-items-start review_box mb-5">
+                            <h4 class="ml-3">Add a Review</h4>
+                            <form class="" action="" method="post" novalidate="novalidate"> 
+                                {% csrf_token %}
+                                <div class="rating ml-3">
+                                <input type="radio" id="star5" name="rating" value="5" />
+                                <label for="star5"></label>
+                                <input type="radio" id="star4" name="rating" value="4" />
+                                <label for="star4"></label>
+                                <input type="radio" id="star3" name="rating" value="3" />
+                                <label for="star3"></label>
+                                <input type="radio" id="star2" name="rating" value="2" />
+                                <label for="star2"></label>
+                                <input type="radio" id="star1" name="rating" value="1" />
+                                <label for="star1"></label>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <textarea class="form-control" name="message" rows="1" placeholder="Review"></textarea>
+                                </div>
+                              </div>
+                              <div class="col-md-12 text-right">
+                                <button type="submit" value="submit" class="btn_3">
+                                    Submit Now
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                  </div>
-                  <div class="col-md-12 text-right">
-                    <button type="submit" value="submit" class="btn_3">
-                      Submit Now
-                    </button>
-                  </div>
-                </form>
-              </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </section>
+</section>
+
   <!--================End Product Description Area =================-->
 
   <!-- product_list part start-->

@@ -8,6 +8,8 @@ from user_products.models import Brands,Category,ColorVarient,Products,Image
 from django.views.decorators.cache import cache_control
 from admin_side.models import Banner
 from django.core.paginator import Paginator
+from django.conf import settings
+
 # Create your views here.
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -20,7 +22,8 @@ def homee(request):
     }
     return render(request, 'home.html', context)
 
-
+def custom_404(request, exception):
+    return render(request, '404.html')
 
 def contactt(request):
     return render(request, 'contact.html')

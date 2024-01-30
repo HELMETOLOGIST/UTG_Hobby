@@ -31,16 +31,24 @@
                        <button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn" onclick="changeBtnTxt()"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button> 
                        
                        <div class="ml-auto mt-3 mr-2">
-                          <nav aria-label="Page navigation example">
-                             <ul class="pagination">
-                                <li class="page-item"> <a class="page-link" href="#" aria-label="Previous"> <span aria-hidden="true" class="font-weight-bold">&lt;</span> <span class="sr-only">Previous</span> </a> </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">..</a></li>
-                                <li class="page-item"><a class="page-link" href="#">24</a></li>
-                                <li class="page-item"> <a class="page-link" href="#" aria-label="Next"> <span aria-hidden="true" class="font-weight-bold">&gt;</span> <span class="sr-only">Next</span> </a> </li>
-                             </ul>
-                          </nav>
-                       </div>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                {% if variants.has_previous %}
+                                    <li class="page-item"> <a class="page-link" href="?page=1" aria-label="First"> <span aria-hidden="true" class="font-weight-bold">&lt;&lt;</span> <span class="sr-only">First</span> </a> </li>
+                                    <li class="page-item"> <a class="page-link" href="?page={{ variants.previous_page_number }}" aria-label="Previous"> <span aria-hidden="true" class="font-weight-bold">&lt;</span> <span class="sr-only">Previous</span> </a> </li>
+                                {% endif %}
+                                
+                                {% for i in variants.paginator.page_range %}
+                                    <li class="page-item {% if variants.number == i %}active{% endif %}"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endfor %}
+                                
+                                {% if variants.has_next %}
+                                    <li class="page-item"> <a class="page-link" href="?page={{ variants.next_page_number }}" aria-label="Next"> <span aria-hidden="true" class="font-weight-bold">&gt;</span> <span class="sr-only">Next</span> </a> </li>
+                                    <li class="page-item"> <a class="page-link" href="?page={{ variants.paginator.num_pages }}" aria-label="Last"> <span aria-hidden="true" class="font-weight-bold">&gt;&gt;</span> <span class="sr-only">Last</span> </a> </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
                     </div>
                     <div id="content" class="my-5 ">
                         <div id="filterbar" class="collapse">
@@ -50,12 +58,11 @@
                                     {% csrf_token %}
                                     <ul class="list" id="category-list">
                                         <h4>Browse Categories</h4>
-
                                         {% if Cat_list %}
                                             {% for cat in Cat_list %}
                                                 <li>
                                                     <label>
-                                                        <input type="checkbox" name="selected_categories" value="{{ cat.id }}">
+                                                        <input type="checkbox" name="selected_categories" value="{{ cat.id }}" {% if cat.id in selected_categories %}checked{% endif %}>
                                                         {{ cat.name }}
                                                     </label>
                                                 </li>
@@ -67,14 +74,14 @@
                                     <ul class="list" id="brand-list">
                                         <h4>Browse Brands</h4>
                                         {% if Bran_list %}
-                                        {% for bran in Bran_list %}
-                                        <li>
-                                            <label>
-                                                <input type="checkbox" name="selected_brands" value="{{ bran.id }}">
-                                                {{ bran.name }}
-                                            </label>
-                                        </li>
-                                        {% endfor %}
+                                            {% for bran in Bran_list %}
+                                                <li>
+                                                    <label>
+                                                        <input type="checkbox" name="selected_brands" value="{{ bran.id }}" {% if bran.id in selected_brands %}checked{% endif %}>
+                                                        {{ bran.name }}
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
                                         {% else %}
                                             <p>No Brands are listed.</p>
                                         {% endif %}
@@ -82,7 +89,6 @@
                                     <button type="submit" class="btn_3 btn-primary ml-5 mt-4">Apply</button>
                                 </form>
                             </div>
-
 
                           </div>
                        </div>
@@ -175,7 +181,7 @@
             });
         });
     </script>
-    <script>
+    {% comment %} <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("filter-form").addEventListener("submit", function (event) {
                 event.preventDefault();
@@ -188,7 +194,48 @@
                 window.location.href = url;
             }
         });
+    </script> {% endcomment %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("filter-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+                applyFilters(this);
+            });
+    
+            // Function to apply filters
+            function applyFilters(form) {
+                const formData = new FormData(form);
+                const url = window.location.pathname + "?" + new URLSearchParams(formData).toString();
+                window.location.href = url;
+            }
+    
+            // Function to check checkboxes based on session values
+            function checkCheckboxes() {
+                const selectedCategories = {% if selected_categories %}{{ selected_categories|safe }}{% else %}[]{% endif %};
+                const selectedBrands = {% if selected_brands %}{{ selected_brands|safe }}{% else %}[]{% endif %};
+    
+                selectedCategories.forEach((categoryId) => {
+                    const categoryCheckbox = document.querySelector(`input[name="selected_categories"][value="${categoryId}"]`);
+                    if (categoryCheckbox) {
+                        categoryCheckbox.checked = true;
+                    }
+                });
+    
+                selectedBrands.forEach((brandId) => {
+                    const brandCheckbox = document.querySelector(`input[name="selected_brands"][value="${brandId}"]`);
+                    if (brandCheckbox) {
+                        brandCheckbox.checked = true;
+                    }
+                });
+            }
+    
+            // Call the function when the DOM is loaded
+            checkCheckboxes();
+        });
     </script>
+    
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
 
