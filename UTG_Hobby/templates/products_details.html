@@ -82,16 +82,25 @@
           <div class="col-lg-5 col-xl-5">
               <div class="s_product_text">
                   <h3>{{ product.product.products_name }}</h3>
+                  {% if product.product_offer > 0 %}
                   <h2><span style='font-size:20px;'>&#8377;</span>{{ product.discounted_price }}</h2>
                   <h4>
                     <span style='font-size:20px;'>&#8377;</span>
                     <s>{{ product.price }}</s>
-                  </h4>                  <ul class="list">
+                  </h4> 
+                    <ul class="list">
                     <li>
                       <a href="#" class="text-uppercase text-danger">
                           <span>Offer</span> : {{ product.product_offer|floatformat:0 }}%
                       </a>
                   </li>
+                  {% else %}
+                  <h2><span style='font-size:20px;'>&#8377;</span>{{ product.price }}</h2>
+                    <ul class="list">
+                    <li>
+                      
+                  </li>
+                  {% endif %}
                       <li>
                           <a href="#">
                               <span>Category</span> : {{ product.product.category_id.name }}

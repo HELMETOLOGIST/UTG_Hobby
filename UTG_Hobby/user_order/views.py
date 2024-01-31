@@ -32,6 +32,7 @@ client = razorpay.Client(auth=(config('RAZORPAY_API_KEY'), config('RAZORPAY_API_
 def place_orderr(request):
     if request.user.is_authenticated:
         email = request.user.email
+        print(email)
         user = get_object_or_404(CustomUser, email=email)
         cart_items = Cart.objects.filter(user=user)
         out_of_stock_items = [item for item in cart_items if item.prod_quantity > item.product.quantity]
@@ -108,15 +109,16 @@ def place_orderr(request):
                 
                 # razorpay integration code here
             if payment_mode == 'razor':
-                cart_items = Cart.objects.filter(user=user)
                 if cart_items.exists():
                     try:
                         with transaction.atomic():
                             total_price = 0
                             if 'final_amount' in request.session:
                                 final_amount = int(request.session['final_amount'])
+                                print('final:',final_amount)
                             else:
                                 total_price = sum(cart_items.values_list("cart_price", flat=True))
+                                print('total:',total_price)
 
                             # Create Order instance
                             order = Order.objects.create(
@@ -143,22 +145,20 @@ def place_orderr(request):
                                 
                                 order.quantity += order_item.quantity
                                 cart_item.delete()
-                                
+                            
                             order.expected_date = (order.order_date + timedelta(days=7))
                             order.save()
                             request.session['order_id'] = str(order.order_id)
                             total_price = final_amount if 'final_amount' in request.session else total_price,
                             # Create Razorpay order
+                            
                             razorpay_order_data = {
                                 'amount': total_price * 100,  # Amount in paise
                                 'currency': 'INR',
                                 'receipt': str(order.order_id),
                             }
-
-                            razorpay_order = client.order.create(data=razorpay_order_data)
-                            print(razorpay_order)
+                            
                             response_data = {
-                                'razorpay_order': razorpay_order,
                                 'success': True,
                                 'message': 'Your order has been placed successfully',
                             }

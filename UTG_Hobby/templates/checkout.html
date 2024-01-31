@@ -332,125 +332,117 @@
             });
           }
         });
-      } else if (payment === 'razor') {
+      }if (payment === "razor") {
 
-        // Razorpay script...
-        var options = {
-          "key": "rzp_test_uVOZmd57SunofW",
-          "amount": `${total}` * 100,
-          "currency": "INR",
-          "name": "UTG Hobby",
-          "description": "Online Transaction",
-          "image": "https://media.discordapp.net/attachments/991705054828560496/1185585752751480892/Clipped_image_20231120_182451-01.jpg?ex=65abd546&is=65996046&hm=d4b90657c57ec2b12897a4e4935deae0c5974dc5941048ad98e50a7fa168a4f6&=&format=webp&width=463&height=118",
-          "handler": function (response) {
-            var data = {
-              addreselect: address,
-              total: total,
-              payment_mode: payment,
-              csrfmiddlewaretoken: csrf_token,
-            };
-            $.ajax({
-              type: 'POST',
-              url: "/place_order/",
-              data: data,
-              success: function (responsec) {
-                if (responsec.success) {
-                  window.location.href = "/order_succes/";
-                } else {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error processing your order: ' + responsec.message,
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                  });
-                }
-              },
-              error: function (error) {
-                console.error("AJAX request failed: ", error);
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: 'An error occurred while processing your order',
-                  confirmButtonColor: '#d33',
-                  confirmButtonText: 'OK'
+                var options = {
+                    "key": "rzp_test_uVOZmd57SunofW", // Enter the Key ID generated from the Dashboard
+                    "amount":parseInt(total) * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "UTG Hobby", //your business name
+                    "description": "Thank you for buying from us",
+                    "image": "https://media.discordapp.net/attachments/991705054828560496/1185585752751480892/Clipped_image_20231120_182451-01.jpg?ex=65abd546&is=65996046&hm=d4b90657c57ec2b12897a4e4935deae0c5974dc5941048ad98e50a7fa168a4f6&=&format=webp&width=463&height=118",
+                    //"order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function  (response){
+                        $.ajax({
+                            type: "POST",
+                            url: "/place_order/",
+                            data: {
+                                total: total,
+                                addreselect: address,
+                                payment_mode: payment,
+                                csrfmiddlewaretoken: csrf_token,
+                            },
+                            success: function(response) {
+                                console.log("entered");
+                                if (response && response.success === true) {
+                                    console.log("order_succes");
+                                
+                                // Check if the payment method is Razorpay
+                                   location.reload(true);
+
+                                    // Redirect to the success page for other payment methods
+                                    window.location.href = '/order_succes/';
+                                
+                                } 
+                                else{
+                                  Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'No Cart Items',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK',
+                                  });
+                            }
+                            }
+                        });
+                    
+                    },
+                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                        "name": "", //your customer's name
+                        "email": "", 
+                        "contact": "",  //Provide the customer's phone number for better conversion rates 
+                    },
+                    
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+        
+              }else if (payment === 'wallet') {
+                var data = {
+                  addreselect: address,
+                  total: total,
+                  payment_mode: payment,
+                  csrfmiddlewaretoken: csrf_token,
+                };
+                $.ajax({
+                  type: 'POST',
+                  url: '/place_order/',
+                  data: data,
+                  success: function (response) {
+                    console.log('Response from server:', response);
+                
+                    if (response.success) {
+                      console.log('place_order');
+                      window.location.href = '../order_succes/';
+                    } else {
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Order Failed!',
+                        text: 'Your order could not be placed.\n' + response.message,
+                        confirmButtonText: 'OK',
+                      });
+                    }
+                  },
+                  error: function (error) {
+                    console.error('AJAX request failed:', error);
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: 'An error occurred while processing your order',
+                      confirmButtonColor: '#d33',
+                      confirmButtonText: 'OK',
+                    });
+                  }
                 });
+              }else{
+                // Handle other payment methods if needed
+                console.log('Unsupported payment method');
+                Swal.fire('Error', 'Please Choose Address and Payment Method', 'error');
               }
-            });
-          },
-          "prefill": {
-            "name": "",
-            "email": "",
-            "contact": "",
-          },
-          "notes": {
-            "address": "RazorPay Corporate Office",
-          },
-          "theme": {
-            "color": "#F37254",
-          }
-        };
-        
-        rzp1 = new Razorpay(options);
-        
-        rzp1.on('payment.failed', function (response) {
-          alert(response.error.code);  
-        });
-        
-        rzp1.open();
-      }else if (payment === 'wallet') {
-        var data = {
-          addreselect: address,
-          total: total,
-          payment_mode: payment,
-          csrfmiddlewaretoken: csrf_token,
-        };
-        $.ajax({
-          type: 'POST',
-          url: '/place_order/',
-          data: data,
-          success: function (response) {
-            console.log('Response from server:', response);
-        
-            if (response.success) {
-              console.log('place_order');
-              window.location.href = '../order_succes/';
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Order Failed!',
-                text: 'Your order could not be placed.\n' + response.message,
-                confirmButtonText: 'OK',
-              });
-            }
-          },
-          error: function (error) {
-            console.error('AJAX request failed:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An error occurred while processing your order',
-              confirmButtonColor: '#d33',
-              confirmButtonText: 'OK',
-            });
-          }
-        });
-      }else{
-        // Handle other payment methods if needed
-        console.log('Unsupported payment method');
-        Swal.fire('Error', 'Please Choose Address and Payment Method', 'error');
-      }
-      console.log('After AJAX request');
-      }
+              console.log('After AJAX request');
+              }
 
-    // Function to check if the cart is empty asynchronously
-    function checkCart(callback) {
-      // Your implementation to check if the cart is empty...
-      // Example: Replace the following line with your actual implementation
-      var isCartEmpty = $("#cartItemCount").text() === '0';
-      callback(isCartEmpty);
-    }
-  });
+            // Function to check if the cart is empty asynchronously
+            function checkCart(callback) {
+              // Your implementation to check if the cart is empty...
+              // Example: Replace the following line with your actual implementation
+              var isCartEmpty = $("#cartItemCount").text() === '0';
+              callback(isCartEmpty);
+            }
+          });
 </script>
 
 <script>
