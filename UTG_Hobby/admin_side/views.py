@@ -861,3 +861,24 @@ def offer_delete(request,id):
     item.product_offer = 0
     item.save()
     return redirect('offers')
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def category_offer(request):
+    return render(request, 'category_offer.html')
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def add_category_offer(request):
+    return render(request, 'add_category_offer.html')
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def cancel_category_offer(request):
+    return render(request, 'cancel_category_offer.html')

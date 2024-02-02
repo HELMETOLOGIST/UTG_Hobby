@@ -387,8 +387,6 @@ def invoice(request):
                 "coupon": coupon if coupon_id else None,
             }
             
-            
-            
             return render(request, 'invoice.html', context)
         else:
             messages.error(request, 'Invalid or missing order ID in session.')

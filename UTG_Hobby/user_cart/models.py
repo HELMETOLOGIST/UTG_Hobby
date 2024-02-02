@@ -10,6 +10,7 @@ class Cart(models.Model):
     cart_price = models.PositiveIntegerField(default=1)
     
     
+    
     def __str__(self):
         return self.product.product.products_name
     

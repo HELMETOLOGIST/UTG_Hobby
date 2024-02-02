@@ -88,6 +88,7 @@
                                         <th>ID.</th>
                                         <th class="pl0 text-start">Product</th>
                                         <th class="text-center">Price</th>
+                                        <th class="text-center">Offer</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-end">Amount</th>
                                     </tr>
@@ -101,9 +102,15 @@
                                             </div>
                                         </td>
                                         <td class="pl0">{{item.variant.product.products_name}}</td>
-                                        <td class="text-center"><span style='font-size:15px;'>&#8377;</span>{{item.variant.discounted_price}}</td>
+                                        <td class="text-center"><span style='font-size:15px;'>&#8377;</span>{{item.variant.price}}</td>
+                                        {% if item.variant.product_offer %}
+                                        <td class="text-end">{{item.variant.product_offer|floatformat:0}}%</td>
+                                        {% else %}
+                                        <td class="text-end">-</td>
+                                        {% endif %}
                                         <td class="text-center">{{item.quantity}}</td>
-                                        <td class="text-end"><span style='font-size:15px;'>&#8377;</span>{{item.price}}</td>
+                                        <td class="text-end">{{item.price}}</td>
+
                                     </tr>
                                     {% endfor %}
                                 
@@ -111,6 +118,8 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
+                                        <td></td>
+
                                         <td class="text-center">SubTotal</td>
                                         <td class="text-end"><span style='font-size:15px;'>&#8377;</span>{{order.total_price}}</td>
                                     </tr>
@@ -119,6 +128,8 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
+                                        <td></td>
+ 
                                         
                                         {% if coupon %}
                                         <td class="text-center">Coupon</td>
@@ -128,11 +139,14 @@
                                         <td class="text-end"><span style='font-size:15px;'>&#8377;</span>0</td>
                                         {% endif %}
                                     </tr>
+
                                     
                                     <tr class="tr2">
                                         <td></td>
                                         <td></td>
                                         <td></td>
+                                        <td></td>
+
                                         <td class="text-center f-w-600 active-color">Grand Total</td>
                                         <td class="f-w-600 text-end active-color"><span style='font-size:15px;'>&#8377;</span>{{order.total_price}}</td>
                                     </tr>

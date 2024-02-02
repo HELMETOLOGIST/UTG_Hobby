@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Product Details{% endblock %}
+
 <style>
   /* Custom styles for carousel controls */
   .carousel-control-prev,
@@ -110,6 +111,7 @@
                           <a href="#">
                               <span>Brand</span> : {{ product.product.brand_id.name }}
                           </a>
+                          <input type="hidden" id="ItemId" value="{{product.id}}"></input>
                       </li>
                       <li>
                         {% if product.quantity > 0 %}
@@ -216,8 +218,8 @@
                     <div class="col-lg-12">
                         <div class="d-flex flex-column align-items-start review_box mb-5">
                             <h4 class="ml-3">Add a Review</h4>
-                            <form class="" action="" method="post" novalidate="novalidate"> 
-                                {% csrf_token %}
+                            <form id="yourFormId" onsubmit="return submitForm();" method="">
+                              {% csrf_token %}
                                 <div class="rating ml-3">
                                 <input type="radio" id="star5" name="rating" value="5" />
                                 <label for="star5"></label>
@@ -236,7 +238,7 @@
                                 </div>
                               </div>
                               <div class="col-md-12 text-right">
-                                <button type="submit" value="submit" class="btn_3">
+                                <button type="submit" value="submit"  class="btn_3">
                                     Submit Now
                                 </button>
                             </div>
@@ -280,9 +282,14 @@
   <!-- product_list part end-->
   <script src="{% static "assets_products/js/theme.js" %}"></script>
   <script src="{% static "assets_products/js/swiper.jquery.js" %}"></script>
-
+  <!-- Add this to the head section of your HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  {% block script %}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+  <!-- Your other scripts go here -->
+  {% endblock %}
+  
   <script>
   $(document).ready(function () {
     $('#addcart').click(function (e) {
@@ -324,6 +331,12 @@
         });
     });
 });
+
+function submitForm() {
+  let idValue = $('#ItemId').val();  // Corrected variable name
+  review_check(idValue);
+  return false;
+}
 </script>  
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -340,4 +353,67 @@
     });
   });
 </script>
+
+<script>
+  function review_check(id) {
+    const num = $("input[name='rating']:checked").val();
+    const text = $("textarea[name='message']").val();
+
+    // Validate that a rating is selected
+    if (!num) {
+      Swal.fire({
+        title: 'Validation Error',
+        text: 'Please select a rating.',
+        icon: 'error',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      });
+      return;  // Stop further execution if validation fails
+    }
+
+    $.ajax({
+      url: `/review_check/${id}/`,
+      type: 'POST',
+      data: {
+        "message": text,
+        "rating": num
+      },
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+
+      success: function (data) {
+        if (data.success) {
+          // Review already submitted
+          Swal.fire({
+            title: 'Review Already Submitted',
+            text: data.message,
+            icon: 'info',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          // Review submitted successfully
+          Swal.fire({
+            title: 'Success!',
+            text: data.message,
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          }).then((result) => {
+            // Reload the page after successful review submission
+            location.reload();
+          });
+        }
+      },
+      error: function (error) {
+        console.error(error);
+        console.log('CSRF Token:', '{{ csrf_token }}');
+        console.log('Message:', '{{ message }}');
+      }
+    });
+  };
+</script>
+
+
 {% endblock %}

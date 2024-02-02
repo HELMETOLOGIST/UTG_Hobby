@@ -59,16 +59,33 @@ def shops(request):
 
 
 def products_detailss(request, id):
+    email = request.user
+    variants = get_object_or_404(ColorVarient, id=id)
+    
+    all_rev = Review.objects.filter(user=email, variant=variants)
+        
+    context = {
+        "product": variants,
+        'review_rating': all_rev,   
+    }
+    return render(request, 'products_details.html', context)
+
+
+def review_check(request, id):
     print(id)
     email = request.user
-    print(email)
-    variants = ColorVarient.objects.filter(id=id).first()
-    print(variants)
-    
+    variants = get_object_or_404(ColorVarient, id=id)
+    review_exists = Review.objects.filter(user=email, variant=variants).first()
+
     if request.method == "POST":
+        if review_exists:
+            return JsonResponse({'message': 'Review already submitted', 'success': True})
+
         star_rating = request.POST.get('rating')
         item_review = request.POST.get('message')
-        
+        print(star_rating)
+        print(item_review)
+
         # Check if star_rating is a valid number
         if star_rating and star_rating.isdigit():
             # Convert star_rating to an integer
@@ -76,7 +93,7 @@ def products_detailss(request, id):
         else:
             # Handle the case where star_rating is not a valid number
             star_rating = None
-        
+
         review = Review(
             user=email,
             variant=variants,
@@ -84,17 +101,11 @@ def products_detailss(request, id):
             rating=star_rating,
         )
         review.save()
-        
-        # Redirect to the same page to avoid form resubmission
-        return redirect('products_details', id=id)
 
-    all_rev = Review.objects.filter(variant=variants)
-        
-    context = {
-        "product": variants,
-        'review_rating': all_rev,   
-    }
-    return render(request, 'products_details.html', context)
+        # Redirect to the same page to avoid form resubmission
+        return JsonResponse({'status': 'success', 'message': 'Review submitted successfully', 'success': False})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method', 'success': False})
+
 
 
 
