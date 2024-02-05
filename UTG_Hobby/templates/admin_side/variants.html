@@ -1,20 +1,20 @@
-{% extends "admin_side/admin_base.html" %}
-{% load static %}
-{% block title %}Variant{% endblock %}
-{% block content  %}
+{% extends "admin_side/admin_base.html" %} {% load static %} {% block title
+%}Variant{% endblock %} {% block content %}
 
-
-  <main id="main" class="main">
-    <section class="section">
-      <div class="row">
-        <div class="col-lg-12">
-          
-          <div class="card">
-            <div class="card-body">
-              <h3 class="card-title">Variant</h3>
-              <a href="../../add_variants/{{product_id}}" class="btn btn-primary btn-rounded h-50">Add Variants</a>
-              <!-- Table with stripped rows -->
-              <div class="table-responsive">
+<main id="main" class="main">
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">Variant</h3>
+            <a
+              href="../../add_variants/{{product_id}}"
+              class="btn btn-primary btn-rounded h-50"
+              >Add Variants</a
+            >
+            <!-- Table with stripped rows -->
+            <div class="table-responsive">
               <table class="table datatable">
                 <thead>
                   <tr>
@@ -34,38 +34,57 @@
                     <th scope="row">{{var.id}}</th>
                     <td>
                       {% if var.images.first %}
-                          <img src="{{ var.images.last.image.url }}" alt="{{ var.product.products_name }}" height="50">
+                      <img
+                        src="{{ var.images.last.image.url }}"
+                        alt="{{ var.product.products_name }}"
+                        height="50"
+                      />
                       {% else %}
-                          <p>No image available</p>
+                      <p>No image available</p>
                       {% endif %}
-                  </td>
+                    </td>
                     <td>{{var.product.products_name}}</td>
                     <td>{{var.color}}</td>
                     <td>{{var.price}}</td>
                     <td>{{var.quantity}}</td>
                     {% if var.is_listed %}
-                        <td>
-                            <a href="../../variant_status/{{var.id}}"><button class="badge badge-danger" style="color:red;">Unlist</button></a>
-                        </td>
-                        {%else%}
-                        <td>
-                            <a href="../../variant_status/{{var.id}}"><button class="badge badge-success" style="color:green;">List</button></a>
-                        </td>
-                        {%endif%}
-                    <td><a href="../../edit_variants/{{var.id}}"  class="btn btn-primary">Edit</a></td>
+                    <td>
+                      <a href="../../variant_status/{{var.id}}"
+                        ><button class="badge badge-danger" style="color: red">
+                          Unlist
+                        </button></a
+                      >
+                    </td>
+                    {%else%}
+                    <td>
+                      <a href="../../variant_status/{{var.id}}"
+                        ><button
+                          class="badge badge-success"
+                          style="color: green"
+                        >
+                          List
+                        </button></a
+                      >
+                    </td>
+                    {%endif%}
+                    <td>
+                      <a
+                        href="../../edit_variants/{{var.id}}"
+                        class="btn btn-primary"
+                        >Edit</a
+                      >
+                    </td>
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
-              </div>
-              <!-- End Table with stripped rows -->
-
             </div>
+            <!-- End Table with stripped rows -->
           </div>
-          
         </div>
       </div>
-    </section>
-
-  </main><!-- End #main -->
-  {% endblock %}
+    </div>
+  </section>
+</main>
+<!-- End #main -->
+{% endblock %}

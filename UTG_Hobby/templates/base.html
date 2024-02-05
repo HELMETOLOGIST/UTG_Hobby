@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="icon" href="{% static "assets_home/img/favicon.png" %}" >
+    <link rel="icon" href="{% static "assets_home/img/logo1.jpg" %}">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'assets_home/css/bootstrap.min.css' %}" type='text/css'>
     <!-- animate CSS -->
@@ -39,6 +39,7 @@
     a{
         text-decoration:none !important;
     }
+    
 </style>
 </head>
 
@@ -49,7 +50,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-12">
                     <nav class="navbar navbar-expand-lg navbar-light">
-                        <a class="navbar-brand" href="{% url "home" %}"> <img src="{% static "assets_home/img/logo.jpg" %}" alt="logo" style="height:30px;"> </a>
+                        <a class="navbar-brand mt-1 mb-2" href="{% url "home" %}"> <img src="{% static "assets_home/img/logo.jpg" %}" alt="logo" style="height:30px;"> </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -70,48 +71,72 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-warning" href="{% url "about" %}">About Us</a>
                                 </li>
-                            </ul>
-                        </div>
-                        {% if request.user.is_authenticated %}
-                        <div class="hearer_icon d-flex ">
-                            <a id="search_1" href="javascript:void(0)"><i class="ti-search text-warning"></i></a>
-                            <a href=""><i class="ti-heart text-warning"></i></a>
-                            <div class="dropdown cart cart-icon">
-                                <a class="dropdown-item p-0" href="{% url "cart" %}">
-                                    <i class="fas fa-cart-plus text-warning"></i>
-                                </a>
-                            </div>
-                            <div class="header_icon d-flex">
-                                <ul class="nav">
-                                    <li class="nav-item dropdown">
-                                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
-                                            <i class="fas fa-solid fa-user text-warning"></i>
-                                        </a>                                
-                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                            <a class="dropdown-item">{{ first_name }}</a>
-                                            <a class="dropdown-item" href="{% url "user_profile" %}">Profile</a>
-                                            <a class="dropdown-item" href="{% url "wallet" %}">My Wallet</a>
-                                            <a class="dropdown-item" href="{% url "logout" %}">Logout</a> 
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </div>
-                        {% else %}
-                        <div class="header_icon d-flex">
-                            <ul class="nav">
-                                <li class="nav-item dropdown ">
-                                    <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
-                                        <i class="fas fa-solid fa-user text-warning"></i>
-                                    </a>
+                                <li class="nav-item only-drop">
+                                    <a class="nav-link text-warning " id="search_1" href="javascript:void(0)">Search</a>
+                                </li>
+                                <li class="nav-item dropdown only-drop">
+                                    <a class='nav-link text-warning' href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
+                                        User
+                                    </a>                                
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                        <a class="dropdown-item" href="{% url "login" %}">Login</a>  
+                                        <a class="dropdown-item">{{ first_name }}</a>
+                                        <a class="dropdown-item" href="{% url "user_profile" %}">Profile</a>
+                                        <a class="dropdown-item" href="{% url "wallet" %}">My Wallet</a>
+                                        <a class="dropdown-item" href="{% url "logout" %}">Logout</a> 
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown only-drop">
+                                    <div class="dropdown cart cart-icon">
+                                        <a class="dropdown-item p-0 nav-link text-warning" href="{% url "cart" %}">
+                                            Cart
+                                        </a>
                                     </div>
                                 </li>
                             </ul>
                         </div>
-                        {% endif %}
+                        <div class='side-nav'>
+                            {% if request.user.is_authenticated %}
+                            <div class="hearer_icon  d-flex ">
+                                <a id="search_1" href="javascript:void(0)"><i class="ti-search text-warning"></i></a>
+                                <a href=""><i class="ti-heart text-warning"></i></a>
+                                <div class="dropdown cart cart-icon">
+                                    <a class="dropdown-item p-0" href="{% url "cart" %}">
+                                        <i class="fas fa-cart-plus text-warning"></i>
+                                    </a>
+                                </div>
+                                <div class="header_icon d-flex">
+                                    <ul class="nav">
+                                        <li class="nav-item dropdown">
+                                            <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
+                                                <i class="fas fa-solid fa-user text-warning"></i>
+                                            </a>                                
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
+                                                <a class="dropdown-item">{{ first_name }}</a>
+                                                <a class="dropdown-item" href="{% url "user_profile" %}">Profile</a>
+                                                <a class="dropdown-item" href="{% url "wallet" %}">My Wallet</a>
+                                                <a class="dropdown-item" href="{% url "logout" %}">Logout</a> 
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="header_icon   d-flex">
+                                <ul class="nav">
+                                    <li class="nav-item dropdown ">
+                                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
+                                            <i class="fas fa-solid fa-user text-warning"></i>
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
+                                            <a class="dropdown-item" href="{% url "login" %}">Login</a>  
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        
                     </nav>
                 </div>
             </div>
@@ -137,8 +162,8 @@
 
     </body>
     <!--::footer_part start::-->
-    <footer class="footer_part">
-        <div class="container">
+    <footer class="footer_part mt-5">
+        <div class="container ">
             <div class="row justify-content-around">
                 <div class="col-sm-6 col-lg-2">
                     <div class="single_footer_part">
@@ -212,7 +237,7 @@
                     <div class="col-lg-8">
                         <div class="copyright_text">
                             <P><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This website is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://instagram.com/nijithxcv/" target="_blank">Nijith</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></P>
                         </div>
                     </div>

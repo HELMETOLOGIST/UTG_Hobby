@@ -154,7 +154,7 @@
                 <li>
                   <a href="#">{{pro.product.product.products_name}}
                     <span class="middle text-center">x {{ pro.prod_quantity }}</span>
-                    <span class="last">${{pro.cart_price}}</span>
+                    <span class="last"><span style='font-size:15px;'>&#8377;</span>{{pro.cart_price}}</span>
                   </a>
                 </li>
                 {% endfor %}
@@ -162,21 +162,21 @@
               <ul class="list list_2">
                 <li>
                   <a href="#">Subtotal
-                    <span>${{total}}</span>
+                    <span><span style='font-size:15px;'>&#8377;</span>{{total}}</span>
                   </a>
                 </li>
                 <li>
                   <a href="#">Coupon
                     {% if discount_amount %}
-                    <span>Flat rate: $<span class="coupon-discount">{{discount_amount}}</span></span>
+                    <span>Flat rate: <span style='font-size:15px;'>&#8377;</span><span class="coupon-discount">{{discount_amount}}</span></span>
                     {% else %}
-                    <span>Flat rate: $<span class="coupon-discount">0</span></span>
+                    <span>Flat rate: <span style='font-size:15px;'>&#8377;</span><span class="coupon-discount">0</span></span>
                     {% endif %}
                   </a>
                 </li>
                 <li>
                   <a href="#" id="total1" class="total_price">Total
-                    <span>$<span id = "coupon-total" class="coupon-total">{{total}}</span></span>
+                    <span><span id = "coupon-total" class="coupon-total"><span style='font-size:15px;'>&#8377;</span>{{total}}</span></span>
                   </a>
                 </li>
               </ul>

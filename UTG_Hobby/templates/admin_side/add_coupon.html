@@ -1,7 +1,5 @@
-{% extends "admin_side/admin_base.html" %}
-{% load static %}
-{% block title %}Add Coupon{% endblock %}
-{% block content  %}
+{% extends "admin_side/admin_base.html" %} {% load static %} {% block title
+%}Add Coupon{% endblock %} {% block content %}
 
 <main id="main" class="main">
   <div class="col-lg-12">
@@ -10,39 +8,72 @@
         <h5 class="card-title">Add Coupon</h5>
 
         <!-- No Labels Form -->
-        <form id="productForm" class="row g-3" action="{% url 'add_coupon' %}" method="POST">
+        <form
+          id="productForm"
+          class="row g-3"
+          action="{% url 'add_coupon' %}"
+          method="POST"
+        >
           {% csrf_token %}
           <div class="col-md-12">
-            <input type="text" class="form-control" placeholder="name" name="name">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="name"
+              name="name"
+            />
           </div>
           <div class="col-12">
-            <input type="text" class="form-control" placeholder="code" name="code">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="code"
+              name="code"
+            />
           </div>
           <div class="col-12">
-            <input type="number" class="form-control" placeholder="discount_price" name="discount_price">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="discount_price"
+              name="discount_price"
+            />
           </div>
           <div class="col-12">
-            <input type="number" class="form-control" placeholder="minimum_purchase" name="minimum_purchase">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="minimum_purchase"
+              name="minimum_purchase"
+            />
           </div>
           <div class="col-12">
-            <input type="date" class="form-control" placeholder="exp_date" name="exp_date">
+            <input
+              type="date"
+              class="form-control"
+              placeholder="exp_date"
+              name="exp_date"
+            />
           </div>
           <div class="col-12">
-            <input type="number" class="form-control" placeholder="usage_limit" name="usage_limit">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="usage_limit"
+              name="usage_limit"
+            />
           </div>
           {% if messages %}
-          <div class="alert text-danger" id='alert-message'>
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
+          <div class="alert text-danger" id="alert-message">
+            {% for message in messages %} {{ message }} {% endfor %}
           </div>
           {% endif %}
 
           <div class="text-center">
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
-        </form><!-- End No Labels Form -->
-
+        </form>
+        <!-- End No Labels Form -->
       </div>
     </div>
   </div>
@@ -50,10 +81,10 @@
 
 <script>
   function hideAlert() {
-    var alertMessage = document.getElementById('alert-message');
+    var alertMessage = document.getElementById("alert-message");
     if (alertMessage) {
       setTimeout(function () {
-        alertMessage.style.display = 'none';
+        alertMessage.style.display = "none";
       }, 2000);
     }
   }
@@ -70,27 +101,32 @@
         products_name: {
           required: true,
           minlength: 3,
-          noConsecutiveSpaces: true
+          noConsecutiveSpaces: true,
         },
       },
       messages: {
         products_name: {
           required: "Please enter the product name",
           minlength: "Product name must be at least 3 characters long",
-          noConsecutiveSpaces: "Product name cannot contain 2 consecutive spaces"
+          noConsecutiveSpaces:
+            "Product name cannot contain 2 consecutive spaces",
         },
       },
       errorClass: "is-invalid",
       errorPlacement: function (error, element) {
         error.addClass("invalid-feedback");
         error.insertAfter(element);
-      }
+      },
     });
 
     // Custom validation method
-    $.validator.addMethod("noConsecutiveSpaces", function (value, element) {
-      return !/\s{2,}/.test(value);
-    }, "Product name cannot contain more than 2 consecutive spaces");
+    $.validator.addMethod(
+      "noConsecutiveSpaces",
+      function (value, element) {
+        return !/\s{2,}/.test(value);
+      },
+      "Product name cannot contain more than 2 consecutive spaces"
+    );
   });
 </script>
 

@@ -21,20 +21,24 @@
                   <tr>
                     <th scope="col">ID</th>
                     <th scope="col">CATEGORY</th>
+                    <th scope="col">PRODUCT</th>
                     <th scope="col">PRICE</th>
                     <th scope="col">DISCOUNT</th>
                     <th scope="col">DISCOUNTED PRICE</th>
+                    <th scope="col">EDIT</th>
                     <th scope="col">DELETE</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for ban in variant %}
+                  {% for ban in category %}
                   <tr>
                     <th scope="row">{{ban.id}}</th>
-                    <td>{{ban.product.category_id}}</td>
-                    <td>{{ban.price}} </td>
-                    <td>{{ban.category_offer}}%  </td>
-                    <td>{{ban.discounted_price}}</td>
+                    <td>{{ban.product.category_id.name}}</td>
+                    <td>{{ban.product.products_name}}-{{ban.color}}</td>
+                    <td>₹{{ban.price}}</td>
+                    <td>{{ban.category_offer|floatformat:0}}%  </td>
+                    <td>₹{{ban.discounted_price}}</td>
+                    <td><a href="../../edit_category_offer/{{ban.id}}" class="btn btn-primary">Edit</a></td>
                     <td><a href="../../cancel_category_offer/{{ban.id}}"><button class="badge badge-danger" style="color:red;">Delete</button></a></td>
                   </tr>
                   {% endfor %}

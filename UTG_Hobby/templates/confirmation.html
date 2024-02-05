@@ -42,7 +42,7 @@
                 <p>Phone</p><span>: {{order.address.phone}}</span>
               </li>
               <li>
-                <p>total</p><span>: {{order.total_price}}</span>
+                <p>total</p><span>: {{total_discounted_price}}</span>
               </li>
               <li>
                 <p>Payment Method</p><span class="text-uppercase">: {{order.payment_mode}}</span>
@@ -93,7 +93,7 @@
                 {% endfor %}
                 <tr>
                   <td colspan="3">Subtotal</td>
-                  <td><span class="font-weight-bold text-dark">${{ order.total_price }}</span></td>
+                  <td><span class="font-weight-bold text-dark">${{ total_discounted_price }}</span></td>
                 </tr>
                 {% comment %} <tr>
                   <td colspan="3">Shipping</td>

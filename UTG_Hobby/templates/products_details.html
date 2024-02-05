@@ -2,35 +2,7 @@
 {% load static %}
 {% block title %}Product Details{% endblock %}
 
-<style>
-  /* Custom styles for carousel controls */
-  .carousel-control-prev,
-  .carousel-control-next {
-      color: #000000; /* Change this to the desired color */
-      font-size: 2rem; /* Adjust the font size as needed */
-      top: 50%; /* Adjust the vertical position */
-      transform: translateY(-50%); /* Center vertically */
-  }
 
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-      background-color: #000000; /* Change this to the desired background color */
-      border: 1px solid #ffffff; /* Change this to the desired border color */
-      border-radius: 5px; /* Adjust the border-radius as needed */
-  }
-
-  .carousel-control-prev,
-  .carousel-control-next {
-      width: 40px; /* Adjust the width as needed */
-      height: 40px; /* Adjust the height as needed */
-  }
-
-  .carousel-control-prev:hover,
-  .carousel-control-next:hover {
-      color: #000000; /* Change this to the desired color on hover */
-      background-color: #ffffff; /* Change this to the desired background color on hover */
-  }
-</style>
 {% block content %}
   <!-- breadcrumb start-->
   <section class="breadcrumb breadcrumb_bg">
@@ -62,46 +34,44 @@
                       <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
                   {% endfor %}
               </ol>
-              <div class="carousel-inner">
-                  {% for img in product.images.all %}
-                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                          <img class="d-block w-100" src="{{ img.image.url }}" alt="Slide {{ forloop.counter }}">
-                      </div>
-                  {% endfor %}
-              </div>
-              <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-              </a>
+              <div class="carousel-inner main-image">
+                {% for img in product.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img class="d-block w-100 zoom-image" src="{{ img.image.url }}" alt="Slide {{ forloop.counter }}">
+                    </div>
+                {% endfor %}
+            </div>
+              
           </div>
       </div>
 
           <div class="col-lg-5 col-xl-5">
               <div class="s_product_text">
                   <h3>{{ product.product.products_name }}</h3>
-                  {% if product.product_offer > 0 %}
+                  {% if product.product_offer < product.category_offer %}
                   <h2><span style='font-size:20px;'>&#8377;</span>{{ product.discounted_price }}</h2>
                   <h4>
                     <span style='font-size:20px;'>&#8377;</span>
                     <s>{{ product.price }}</s>
                   </h4> 
-                    <ul class="list">
-                    <li>
+                  {% comment %} <ul class="list"> {% endcomment %}
+                    <ul>
                       <a href="#" class="text-uppercase text-danger">
-                          <span>Offer</span> : {{ product.product_offer|floatformat:0 }}%
+                          <span>Offer</span> : {{ product.category_offer|floatformat:0 }}%
                       </a>
-                  </li>
+                    </ul>
                   {% else %}
-                  <h2><span style='font-size:20px;'>&#8377;</span>{{ product.price }}</h2>
-                    <ul class="list">
-                    <li>
-                      
-                  </li>
-                  {% endif %}
+                  <h2><span style='font-size:20px;'>&#8377;</span>{{ product.discounted_price }}</h2>
+                  <h2  class="text-black"><span style='font-size:20px;'>&#8377;</span><strike>{{ product.price }}</strike></h2>
+                  
+                  <ul>
+                    <a href="#" class="text-uppercase text-danger">
+                        <span>Offer</span> : {{ product.product_offer|floatformat:0 }}%
+                    </a>
+                  </ul>
+                {% comment %} </ul> {% endcomment %}
+                {% endif %}
+                  <ul class="list">
                       <li>
                           <a href="#">
                               <span>Category</span> : {{ product.product.category_id.name }}
@@ -413,6 +383,35 @@ function submitForm() {
       }
     });
   };
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const mainImage = document.querySelector('.main-image');
+      const zoomImages = document.querySelectorAll('.zoom-image');
+
+      zoomImages.forEach((img, index) => {
+          const zoomIn = (event) => {
+              const boundingRect = mainImage.getBoundingClientRect();
+              const mouseX = event.clientX - boundingRect.left;
+              const mouseY = event.clientY - boundingRect.top;
+
+              const offsetX = (mouseX / boundingRect.width) * 100;
+              const offsetY = (mouseY / boundingRect.height) * 100;
+
+              img.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+              img.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+          };
+
+          const zoomOut = () => {
+              img.style.transform = 'scale(1)';
+          };
+
+          mainImage.addEventListener('mousemove', zoomIn);
+          mainImage.addEventListener('mouseleave', zoomOut);
+      });
+  });
 </script>
 
 

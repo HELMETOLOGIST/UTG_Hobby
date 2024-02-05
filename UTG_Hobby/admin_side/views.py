@@ -867,18 +867,53 @@ def offer_delete(request,id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
 def category_offer(request):
-    return render(request, 'category_offer.html')
-
+    category = ColorVarient.objects.filter(category_offer__gt=0)
+    return render(request, 'admin_side/category_offer.html', {'category':category})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
 def add_category_offer(request):
-    return render(request, 'add_category_offer.html')
+    categories = Category.objects.all().order_by('id')
+    
+    if request.method == "POST":
+        category_id = request.POST.get('category')
+        discount = request.POST.get('discount')
+        
+        # Get the selected Category
+        category = get_object_or_404(Category, id=category_id)
+        
+        # Update category_offer for all ColorVarients associated with the selected Category
+        color_varients = ColorVarient.objects.filter(product__category_id=category_id)
+        color_varients.update(category_offer=discount)
+        
+        return redirect('category_offer')
+    
+    return render(request, 'admin_side/add_category_offer.html', {'categories': categories})
 
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
-def cancel_category_offer(request):
-    return render(request, 'cancel_category_offer.html')
+def edit_category_offer(request,id):
+    categories = Category.objects.all().order_by('id')
+    item = get_object_or_404(ColorVarient, id=id)
+    print(item)
+    if request.method == "POST":
+        discount = request.POST.get('discount')
+
+        item.category_offer = discount
+        
+        return redirect('category_offer')
+    
+    return render(request, 'admin_side/edit_category_offer.html', {'categories': categories, 'item':item})
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
+def cancel_category_offer(request,id):
+    item = get_object_or_404(ColorVarient, id=id)
+    item.category_offer = 0
+    item.save()
+    return redirect('category_offer')

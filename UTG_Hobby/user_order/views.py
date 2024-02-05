@@ -10,7 +10,7 @@ from user_profile.models import Address
 from django.db import transaction
 import json
 from django.views.decorators.cache import never_cache
-
+from django.db.models import Sum
 import uuid
 from django.utils import timezone
 from datetime import timedelta, datetime
@@ -22,6 +22,30 @@ from django.conf import settings
 from decimal import Decimal, ROUND_DOWN
 from user_coupon.models import Coupon,CouponUsage
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F, Value, DecimalField
+
+def order_success(request):
+    if request.user.is_authenticated:
+        order_id = request.session.get('order_id')
+
+        if order_id:
+            order = get_object_or_404(Order, order_id=order_id)
+            order_items = OrderItem.objects.filter(order=order)
+
+            # Update the queryset to order by discounted_price in reverse order
+            order_items = order_items.annotate(
+                discounted_price=F('variant__discounted_price')
+            ).order_by('-discounted_price')
+
+            context = {
+                "order": order,
+                "order_items": order_items,
+            }
+            return render(request, 'confirmation.html', context)
+        else:
+            messages.error(request, 'Invalid or missing order ID in session.')
+            return redirect('home')  # Redirect to home or another appropriate page
+
 
 client = razorpay.Client(auth=(config('RAZORPAY_API_KEY'), config('RAZORPAY_API_SECRET_KEY')))
 
@@ -276,12 +300,17 @@ def order_success(request):
     if request.user.is_authenticated:
         order_id = request.session.get('order_id')
         
+        
         if order_id:
             order = get_object_or_404(Order, order_id=order_id)
             order_items = OrderItem.objects.filter(order=order)
+            total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
+            print(total_discounted_price)
+            
             context = {
                 "order": order,
                 "order_items": order_items,
+                'total_discounted_price':total_discounted_price,
             }
             return render(request, 'confirmation.html', context)
         else:
@@ -357,13 +386,15 @@ def order_detailss(request, order_id):
     if request.user.is_authenticated:
         order = get_object_or_404(Order, order_id=order_id, user=request.user)
         order_items = OrderItem.objects.filter(order=order)
-                
+        total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
+        print(total_discounted_price)        
         product_ids = [item.variant.product.id for item in order_items]
         print(order_items)
         context = {
             "order": order,
             "order_items": order_items,
             "product_ids": product_ids,
+            "total_discounted_price":total_discounted_price,
         }
 
         return render(request, 'order.html', context)
@@ -385,6 +416,7 @@ def invoice(request):
                 "order": order,
                 "order_items": order_items,
                 "coupon": coupon if coupon_id else None,
+                
             }
             
             return render(request, 'invoice.html', context)
@@ -398,7 +430,7 @@ def user_invoicee(request,order_id):
         coupon_id = request.session.get('coupon_id')
         order = get_object_or_404(Order, order_id=order_id, user=request.user)
         order_items = OrderItem.objects.filter(order=order)
-        
+        total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
         if coupon_id:
             coupon = get_object_or_404(Coupon, id=coupon_id)
         
@@ -409,6 +441,7 @@ def user_invoicee(request,order_id):
             "order_items": order_items,
             "product_ids": product_ids,
             "coupon": coupon if coupon_id else None,
+            "total_discounted_price":total_discounted_price,
         }
 
         return render(request, 'user_invoice.html', context)

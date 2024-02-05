@@ -43,6 +43,7 @@ urlpatterns = [
     path('offer_delete/<str:id>/',views.offer_delete,name='offer_delete'),
     path('category_offer',views.category_offer,name='category_offer'),
     path('add_category_offer',views.add_category_offer,name='add_category_offer'),
+    path('edit_category_offer/<str:id>/',views.edit_category_offer,name='edit_category_offer'),
     path('cancel_category_offer/<str:id>/',views.cancel_category_offer,name='cancel_category_offer'),
 
 ]
