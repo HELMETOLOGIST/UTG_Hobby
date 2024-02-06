@@ -442,6 +442,7 @@ def user_invoicee(request,order_id):
             "product_ids": product_ids,
             "coupon": coupon if coupon_id else None,
             "total_discounted_price":total_discounted_price,
+            
         }
 
         return render(request, 'user_invoice.html', context)
