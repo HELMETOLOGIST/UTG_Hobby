@@ -42,7 +42,7 @@
                 <p>Phone</p><span>: {{order.address.phone}}</span>
               </li>
               <li>
-                <p>total</p><span>: {{total_discounted_price}}</span>
+                <p>total</p><span>: {{total}}</span>
               </li>
               <li>
                 <p>Payment Method</p><span class="text-uppercase">: {{order.payment_mode}}</span>
@@ -56,8 +56,9 @@
           <div class="single_confirmation_details mr-4" >
             <h4>shipping Address</h4>
             <ul>
-                <li>
-                    <p>Address</p><span>: {{order.address.street_address}}</span>
+                <li style="max-width:10px !important;">
+                  <p>Address</p>
+                  <span>:{{order.address.street_address}}</span>
                 </li>
                   <li>
                     <p>city</p><span>: {{order.address.city}}</span>
@@ -93,7 +94,7 @@
                 {% endfor %}
                 <tr>
                   <td colspan="3">Subtotal</td>
-                  <td><span class="font-weight-bold text-dark">${{ total_discounted_price }}</span></td>
+                  <td><span class="font-weight-bold text-dark">${{ total }}</span></td>
                 </tr>
                 {% comment %} <tr>
                   <td colspan="3">Shipping</td>

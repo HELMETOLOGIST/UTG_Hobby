@@ -101,23 +101,19 @@
                                     <div class="single_product_text">
                                         <div class="d-flex justify-content-between">
                                             <h4 class="ml-4">{{ var.product.products_name }}</h4>
-                                            {% if var.discount %}
-                                                <h4 class="mr-4"><span class="text-danger">{{ var.product_offer|floatformat:0 }}</span>% OFF</h4>
-                                            {% else %}
-                                                <h4 class="mr-4"><span class="text-danger">{{ var.category_offer|floatformat:0 }}</span>% OFF</h4>
+                                            {% if var.discount > 0 %}
+                                                <h4 class="mr-4"><span class="text-danger">{{ var.discount|floatformat:0 }}</span>% OFF</h4>
                                             {% endif %}
-
-
                                         </div>
                                         <p class="ml-4 text-black">Brand: {{ var.product.brand_id.name }}</p>
                                         <p class="ml-4 text-black">Color: {{ var.color }}</p1>
 
                                         {% if var.discount %}
-                                        <h3 class="del ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.price }}</h3>
-                                        <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.discounted_price }}</h3>
+                                            <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.discounted_price }}</h3>
+                                            <h3 class=" ml-4"><span style='font-size:20px;'>&#8377;</span><strike>{{ var.price }}</strike></h3>
                                         {% else %}
-                                        <h3 class="del ml-4 text-muted">Offer</h3>
-                                        <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.discounted_price }}</h3>
+                                            <h3 class="ml-4"><span style='font-size:20px;'>&#8377;</span>{{ var.discounted_price }}</h3>
+                                            <h3 class=" ml-4 text-muted"><strike>Offer</strike></h3>
                                         {% endif %}
 
 

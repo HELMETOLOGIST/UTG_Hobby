@@ -56,7 +56,6 @@ client = razorpay.Client(auth=(config('RAZORPAY_API_KEY'), config('RAZORPAY_API_
 def place_orderr(request):
     if request.user.is_authenticated:
         email = request.user.email
-        print(email)
         user = get_object_or_404(CustomUser, email=email)
         cart_items = Cart.objects.filter(user=user)
         out_of_stock_items = [item for item in cart_items if item.prod_quantity > item.product.quantity]
@@ -81,7 +80,6 @@ def place_orderr(request):
                             else:
                                 total_price = sum(cart_items.values_list("cart_price", flat=True))
 
-                            print("price:",total_price)
                             order = Order.objects.create(
                                 user = user,
                                 address = delivery_address,
@@ -118,7 +116,6 @@ def place_orderr(request):
                             }
                             return JsonResponse(response_data)
                     except Exception as e:
-                        print('Error occured while placing the order : ',e)
                         response_data = {
                             'success': False,
                             'message': 'An error occurred while processing your order'
@@ -137,12 +134,11 @@ def place_orderr(request):
                     try:
                         with transaction.atomic():
                             total_price = 0
+
                             if 'final_amount' in request.session:
                                 final_amount = int(request.session['final_amount'])
-                                print('final:',final_amount)
                             else:
                                 total_price = sum(cart_items.values_list("cart_price", flat=True))
-                                print('total:',total_price)
 
                             # Create Order instance
                             order = Order.objects.create(
@@ -173,11 +169,10 @@ def place_orderr(request):
                             order.expected_date = (order.order_date + timedelta(days=7))
                             order.save()
                             request.session['order_id'] = str(order.order_id)
-                            total_price = final_amount if 'final_amount' in request.session else total_price,
+                            total_price = final_amount if 'final_amount' in request.session else total_price
                             # Create Razorpay order
-                            
                             razorpay_order_data = {
-                                'amount': total_price * 100,  # Amount in paise
+                                'amount': int(total_price) * 100,  # Amount in paise
                                 'currency': 'INR',
                                 'receipt': str(order.order_id),
                             }
@@ -189,15 +184,11 @@ def place_orderr(request):
                             return JsonResponse(response_data)
 
                     except Exception as e:
-                        print('Error occurred while placing the order. Exception Type:', type(e).__name__)
-                        print('Exception Value:', str(e))
                         response_data = {
                             'success': False,
                             'message': 'An error occurred while processing your order'
                         }
                         return JsonResponse(response_data)
-
-                          
                 else:
                     response_data = {
                         'success': False,
@@ -217,7 +208,6 @@ def place_orderr(request):
                                 total_price = sum(cart_items.values_list("cart_price", flat=True))
                             user_wallet = Wallet.objects.filter(user=user).last()
                             last = user_wallet.balance_amount
-                            print(last)
                         
                             if user_wallet.balance_amount >= total_price:
                                 order = Order.objects.create(
@@ -248,7 +238,7 @@ def place_orderr(request):
                                 order.save()
                                 request.session['order_id'] = str(order.order_id)
                                 
-                                amount = request.session["amount"]
+                                amount = request.session.get("amount",0)
                                 total_price = final_amount if 'final_amount' in request.session else total_price
                                 new = last - total_price
                                 new = Decimal(new)
@@ -279,6 +269,7 @@ def place_orderr(request):
                         response_data = {
                             'success':False,
                             'message':'Error while placing order',
+                            "error" : e
                         }
                         return JsonResponse(response_data)
                     
@@ -296,27 +287,68 @@ def place_orderr(request):
         return JsonResponse(response_data)
         
 
+from django.shortcuts import get_object_or_404
+from .models import Order, Coupon
+from .utils import apply_coupon_to_order  # Import the function for applying coupons
+
 def order_success(request):
     if request.user.is_authenticated:
         order_id = request.session.get('order_id')
-        
-        
+
         if order_id:
+            # Retrieve order and other details
             order = get_object_or_404(Order, order_id=order_id)
             order_items = OrderItem.objects.filter(order=order)
-            total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
-            print(total_discounted_price)
             
+            # Calculate total price and discounts
+            total_price = Decimal(0)
+            total_discounted_price = Decimal(0)
+            for item in order_items:
+                total_price += item.price * item.quantity
+                discounted_price = item.variant.discounted_price()
+                total_discounted_price += discounted_price * item.quantity
+            
+            # Calculate total amount after applying discounts and coupons
+            total_amount_after_discounts = total_discounted_price
+            applied_coupon = order.applied_coupon
+            coupon_discount = Decimal(0)
+            if applied_coupon:
+                coupon_discount = applied_coupon.discount_price
+            total_amount_after_discounts -= coupon_discount
+            total_amount_after_discounts = max(total_amount_after_discounts, Decimal(0))
+            final_amount = request.session.get('final_amount')
+            total_amount = request.session.get('total_amount')
+            if final_amount is None:
+                total = total_amount
+            else:
+                total = final_amount
+
+            # Prepare context for rendering template
             context = {
                 "order": order,
+                "total":total,
+                "total_amount":total_amount,
+                "final_amount":final_amount,
                 "order_items": order_items,
-                'total_discounted_price':total_discounted_price,
+                "total_price": total_price,
+                "total_discounted_price": total_discounted_price,
+                "applied_coupon": applied_coupon,
+                "total_coupon_discount": coupon_discount,
+                "total_amount_after_discounts": total_amount_after_discounts,
             }
+            if 'final_amount' in request.session:
+                del request.session['final_amount']
+            else:
+                del request.session['total_amount']
             return render(request, 'confirmation.html', context)
         else:
             messages.error(request, 'Invalid or missing order ID in session.')
-            return redirect('home')  # Redirect to home or another appropriate page
-      
+            return redirect('home')
+
+
+  # Redirect to home or another appropriate page
+
+
 
 def cancel_orderr(request,id):
     email = request.user.email
@@ -387,9 +419,7 @@ def order_detailss(request, order_id):
         order = get_object_or_404(Order, order_id=order_id, user=request.user)
         order_items = OrderItem.objects.filter(order=order)
         total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
-        print(total_discounted_price)        
         product_ids = [item.variant.product.id for item in order_items]
-        print(order_items)
         context = {
             "order": order,
             "order_items": order_items,
@@ -412,13 +442,24 @@ def invoice(request):
         if order_id:
             order = get_object_or_404(Order, order_id=order_id)
             order_items = OrderItem.objects.filter(order=order)
+            total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
+            final_amount = request.session.get('final_amount')
+            total_amount = request.session.get('total_amount')
+            if final_amount is None:
+                total = total_amount
+            else:
+                total = final_amount
             context = {
                 "order": order,
+                "total":total,
+                "total_discounted_price":total_discounted_price,
                 "order_items": order_items,
                 "coupon": coupon if coupon_id else None,
-                
             }
-            
+            if 'final_amount' in request.session:
+                del request.session['final_amount']
+            else:
+                del request.session['total_amount']
             return render(request, 'invoice.html', context)
         else:
             messages.error(request, 'Invalid or missing order ID in session.')
@@ -435,7 +476,6 @@ def user_invoicee(request,order_id):
             coupon = get_object_or_404(Coupon, id=coupon_id)
         
         product_ids = [item.variant.product.id for item in order_items]
-        print(order_items)
         context = {
             "order": order,
             "order_items": order_items,

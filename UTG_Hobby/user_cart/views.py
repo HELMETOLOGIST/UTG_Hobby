@@ -19,7 +19,6 @@ def cartt(request):
     total = sum(subPrice)
     if 'coupon_id' in request.session:
         del request.session['coupon_id']
-    print(total)
     context = {
         "cart_items":cart_item,
         "total":total,
@@ -104,7 +103,6 @@ def update_cartt(request):
                 cart.save()
 
         priceOfInstance = varient_obj.discounted_price()
-        print(priceOfInstance)
         prodtotal = cart.prod_quantity * priceOfInstance
         cart.cart_price = prodtotal
         cart.save()
@@ -120,6 +118,8 @@ def update_cartt(request):
     return JsonResponse(response_data)
 
 
+from django.db.models import Sum
+
 @login_required
 def checkoutt(request):
     email = request.user.email
@@ -127,20 +127,28 @@ def checkoutt(request):
     address = Address.objects.filter(user=user, is_present=True)
     cart_items = Cart.objects.filter(user=user)
     cart_count = cart_items.count()
-    total = sum(cart_items.values_list("cart_price", flat=True))
-    coupons = Coupon.objects.filter(is_active=True).filter(exp_date__gte=timezone.now())
+    total_cart_price = sum(cart_items.values_list("cart_price", flat=True))
+    coupons = Coupon.objects.filter(is_active=True, exp_date__gte=timezone.now())
     
-    # print("Coupons:", coupons)
+    # Retrieve total coupon amount used by the user
+    total_coupon_amount = CouponUsage.objects.filter(user=user).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     
+    # Calculate the total amount after deducting coupon amount
+    total_amount = total_cart_price - total_coupon_amount
+    request.session['total_amount'] = total_amount
     context = {
-        "addresses":address,
-        "cart_items":cart_items,
-        'total':total,
-        'cart_count':cart_count,
-        'coupons':coupons,
+        "addresses": address,
+        "cart_items": cart_items,
+        'total_cart_price': total_cart_price,
+        'total_coupon_amount': total_coupon_amount,
+        'total_amount': total_amount,
+        'cart_count': cart_count,
+        'coupons': coupons,
     }
     
     return render(request, "checkout.html", context)
+
+
 
 
 @login_required

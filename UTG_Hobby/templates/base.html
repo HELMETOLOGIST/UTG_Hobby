@@ -72,7 +72,7 @@
                                     <a class="nav-link text-warning" href="{% url "about" %}">About Us</a>
                                 </li>
                                 <li class="nav-item only-drop">
-                                    <a class="nav-link text-warning " id="search_1" href="javascript:void(0)">Search</a>
+                                    <a class="nav-link text-warning "  href="javascript:void(0)">Search</a>
                                 </li>
                                 <li class="nav-item dropdown only-drop">
                                     <a class='nav-link text-warning' href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
@@ -98,8 +98,7 @@
                             {% if request.user.is_authenticated %}
                             <div class="hearer_icon  d-flex ">
                                 <a id="search_1" href="javascript:void(0)"><i class="ti-search text-warning"></i></a>
-                                <a href=""><i class="ti-heart text-warning"></i></a>
-                                <div class="dropdown cart cart-icon">
+                                    <div class="dropdown cart cart-icon">
                                     <a class="dropdown-item p-0" href="{% url "cart" %}">
                                         <i class="fas fa-cart-plus text-warning"></i>
                                     </a>
@@ -115,6 +114,27 @@
                                                 <a class="dropdown-item" href="{% url "user_profile" %}">Profile</a>
                                                 <a class="dropdown-item" href="{% url "wallet" %}">My Wallet</a>
                                                 <a class="dropdown-item" href="{% url "logout" %}">Logout</a> 
+                                            </div>
+                                        </li>
+                                        <li class="nav-item only-drop">
+                                            <a class="nav-link text-warning " id="search_1" href="javascript:void(0)">Search</a>
+                                        </li>
+                                        <li class="nav-item dropdown only-drop">
+                                            <a class='nav-link text-warning' href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarDropdown_2">
+                                                User
+                                            </a>                                
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
+                                                <a class="dropdown-item">{{ first_name }}</a>
+                                                <a class="dropdown-item" href="{% url "user_profile" %}">Profile</a>
+                                                <a class="dropdown-item" href="{% url "wallet" %}">My Wallet</a>
+                                                <a class="dropdown-item" href="{% url "logout" %}">Logout</a> 
+                                            </div>
+                                        </li>
+                                        <li class="nav-item dropdown only-drop">
+                                            <div class="dropdown cart cart-icon">
+                                                <a class="dropdown-item p-0 nav-link text-warning" href="{% url "cart" %}">
+                                                    Cart
+                                                </a>
                                             </div>
                                         </li>
                                     </ul>
@@ -142,7 +162,7 @@
             </div>
         </div>
         <form method="GET">
-        <div class="search_input" id="search_input_box">
+        <div class="search_input mt-5" id="search_input_box">
             <div class="container ">
                 <form class="d-flex justify-content-between search-inner" action="">
                     <input type="text" name="search" class="form-control" id="search_input" placeholder="Search Here">

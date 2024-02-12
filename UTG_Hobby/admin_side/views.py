@@ -240,7 +240,6 @@ def add_variantss(request,id):
 @user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
 def edit_variantss(request,id):
     variant = get_object_or_404(ColorVarient, id=id)
-    print(variant.product.id)
     ex_img = Image.objects.filter(variant=variant).order_by("-id")
     
     if request.method == 'POST':
@@ -653,7 +652,6 @@ class DownloadPDF(View):
 @user_passes_test(lambda u: u.is_superuser, login_url="admin_login")
 def banner(request):
     banner = Banner.objects.all().order_by("-id")
-    print(banner)
     return render(request, 'admin_side/banner.html', {'banner':banner})
 
 
@@ -667,8 +665,6 @@ def add_banner(request):
         product = request.POST.get("product")
         image = request.FILES.get("images")
         variant = get_object_or_404(ColorVarient, pk=product)
-        print(product)
-        print(variant)
         
         Banner.objects.create(
             title = title,

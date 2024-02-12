@@ -72,7 +72,6 @@ def products_detailss(request, id):
 
 
 def review_check(request, id):
-    print(id)
     email = request.user
     variants = get_object_or_404(ColorVarient, id=id)
     review_exists = Review.objects.filter(user=email, variant=variants).first()
@@ -83,8 +82,6 @@ def review_check(request, id):
 
         star_rating = request.POST.get('rating')
         item_review = request.POST.get('message')
-        print(star_rating)
-        print(item_review)
 
         # Check if star_rating is a valid number
         if star_rating and star_rating.isdigit():

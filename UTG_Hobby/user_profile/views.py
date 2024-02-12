@@ -11,20 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import logout
 
-# Create your views here.
-
-# @login_required
-# def user_profilee(request):
-#     email = request.user.email
-#     user = get_object_or_404(CustomUser, email=email)
-#     user_data = Address.objects.filter(user=user, is_present=True)
-#     order = Order.objects.filter(user=user)
-#     print(order)
-#     order_item = OrderItem.objects.all()
-#     print(order_item)
-#     return render(request, 'user_profile.html', {"user":user, "address_data":user_data, "order_item":order_item})
-    
-    
+# Create your views here. 
 @login_required
 def user_profilee(request):
     email = request.user.email

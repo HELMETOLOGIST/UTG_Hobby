@@ -9,8 +9,6 @@ class Cart(models.Model):
     prod_quantity = models.IntegerField(null=False, blank=False, default=1)
     cart_price = models.PositiveIntegerField(default=1)
     
-    
-    
     def __str__(self):
         return self.product.product.products_name
     
