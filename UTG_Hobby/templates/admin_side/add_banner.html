@@ -15,7 +15,8 @@
           class="row g-3"
           action="{% url 'add_banner' %}"
           method="POST"
-        >
+          enctype="multipart/form-data"
+          >
           {% csrf_token %}
           <div class="col-md-12">
             <input
@@ -50,7 +51,6 @@
                   type="file"
                   id="formFile"
                   name="images"
-                  multiple
                 />
                 <span
                   class="error-message text-danger mt-2"
