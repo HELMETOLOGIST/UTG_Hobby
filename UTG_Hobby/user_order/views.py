@@ -318,15 +318,16 @@ def order_success(request):
             total_amount_after_discounts = max(total_amount_after_discounts, Decimal(0))
             final_amount = request.session.get('final_amount')
             total_amount = request.session.get('total_amount')
+            total = {}
             if final_amount is None:
-                total = total_amount
+                total['amount'] = total_amount
             else:
-                total = final_amount
+                total['amount'] = final_amount
 
             # Prepare context for rendering template
             context = {
                 "order": order,
-                "total":total,
+                "total":total['amount'],
                 "total_amount":total_amount,
                 "final_amount":final_amount,
                 "order_items": order_items,
@@ -336,10 +337,7 @@ def order_success(request):
                 "total_coupon_discount": coupon_discount,
                 "total_amount_after_discounts": total_amount_after_discounts,
             }
-            if 'final_amount' in request.session:
-                del request.session['final_amount']
-            else:
-                del request.session['total_amount']
+            
             return render(request, 'confirmation.html', context)
         else:
             messages.error(request, 'Invalid or missing order ID in session.')
@@ -445,21 +443,19 @@ def invoice(request):
             total_discounted_price = sum(item.variant.discounted_price() for item in order_items)
             final_amount = request.session.get('final_amount')
             total_amount = request.session.get('total_amount')
+            total = {}
             if final_amount is None:
-                total = total_amount
+                total['amount'] = total_amount
             else:
-                total = final_amount
+                total['amount'] = final_amount
             context = {
                 "order": order,
-                "total":total,
+                "total":total['amount'],
                 "total_discounted_price":total_discounted_price,
                 "order_items": order_items,
                 "coupon": coupon if coupon_id else None,
             }
-            if 'final_amount' in request.session:
-                del request.session['final_amount']
-            else:
-                del request.session['total_amount']
+            
             return render(request, 'invoice.html', context)
         else:
             messages.error(request, 'Invalid or missing order ID in session.')

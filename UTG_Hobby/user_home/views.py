@@ -20,6 +20,11 @@ def homee(request):
         'homeVariant': variants,
         'banner': banner,
     }
+    if 'final_amount' in request.session:
+        del request.session['final_amount']
+                
+    if 'total_amount' in request.session:
+        del request.session['total_amount']
     return render(request, 'home.html', context)
 
 def custom_404(request, exception):

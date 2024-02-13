@@ -9,9 +9,9 @@ from django.core import serializers
 from django.shortcuts import render, get_object_or_404
 from user_review.models import Review
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-# Create your views here.
-
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# Create your views here.
 
 def shops(request):
     selected_categories = request.GET.getlist('selected_categories')
@@ -53,36 +53,42 @@ def shops(request):
         'Cat_list': Cat_list,
         'Bran_list': Bran_list,
     }
+    if 'final_amount' in request.session:
+        del request.session['final_amount']
+                
+    if 'total_amount' in request.session:
+        del request.session['total_amount']
 
     return render(request, 'shop.html', context)
 
 
-
-def products_detailss(request, id):
-    email = request.user
+# @login_required
+def products_detailss(request, id): 
+    user = request.user
     variants = get_object_or_404(ColorVarient, id=id)
-    
-    all_rev = Review.objects.filter(user=email, variant=variants)
-        
+    if user.is_anonymous:
+        all_rev = Review.objects.filter(variant=variants)
+    else:
+        all_rev = Review.objects.filter(user=user, variant=variants) 
     context = {
         "product": variants,
         'review_rating': all_rev,   
     }
     return render(request, 'products_details.html', context)
 
-
 def review_check(request, id):
     email = request.user
-    variants = get_object_or_404(ColorVarient, id=id)
-    review_exists = Review.objects.filter(user=email, variant=variants).first()
-
     if request.method == "POST":
+        if email.is_anonymous:
+            return JsonResponse({'status': 'error', 'message': 'Please Login to Continue!', 'success': True})
+            
+        variants = get_object_or_404(ColorVarient, id=id)   
+        review_exists = Review.objects.filter(user=email, variant=variants).first()
         if review_exists:
             return JsonResponse({'message': 'Review already submitted', 'success': True})
-
+        
         star_rating = request.POST.get('rating')
         item_review = request.POST.get('message')
-
         # Check if star_rating is a valid number
         if star_rating and star_rating.isdigit():
             # Convert star_rating to an integer
@@ -90,7 +96,6 @@ def review_check(request, id):
         else:
             # Handle the case where star_rating is not a valid number
             star_rating = None
-
         review = Review(
             user=email,
             variant=variants,
@@ -98,7 +103,6 @@ def review_check(request, id):
             rating=star_rating,
         )
         review.save()
-
         # Redirect to the same page to avoid form resubmission
         return JsonResponse({'status': 'success', 'message': 'Review submitted successfully', 'success': False})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method', 'success': False})
