@@ -2104,14 +2104,17 @@ ul {
 /**************menu part start*****************/
 /* line 2, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_menu.scss */
 .main_menu {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   z-index: 999;
-  background-color: orange;
+  background-color: rgb(0, 0, 0);
+  height: 82px!important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 /* line 9, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_menu.scss */
 .main_menu .navbar-brand {
   padding-top: 0rem;
@@ -2139,7 +2142,7 @@ ul {
   color: #000;
 }
 
-@media only screen and (min-width: 992px) and (max-width: 1200px) {
+@media only screen and (min-width: 991px) and (max-width: 1200px) {
   /* line 20, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_menu.scss */
   .main_menu .main-menu-item ul li .nav-link {
     padding: 35px 20px;
@@ -2151,6 +2154,17 @@ ul {
   color: #000;
 }
 
+@media(min-width:991px){
+  .only-drop{
+    display: none !important;
+  }
+  
+}
+@media(max-width:990px){
+  .side-nav {  
+    display:none !important;
+  }
+}
 /* line 46, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_menu.scss */
 .main_menu #search_input_box {
   position: fixed;
@@ -3107,11 +3121,33 @@ ul {
 /* line 2, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_subscribe_area.scss */
 .subscribe_area {
   position: relative;
-  background-image: url("../img/pxfuel.jpg");
+  /* background-image: url("../img/pxfuel.jpg"); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
+}
+
+.subscribe_area {
+  position: relative;
+  overflow: hidden;
+}
+
+.subscribe_area iframe {
+  width: 100%;
+  height: 900px;
+  border: none;
+  transition: transform 0.5s ease-in-out;
+}
+
+.subscribe_area:hover iframe {
+  transform: scale(1.1);
+}
+
+.footer_part {
+  border-top: 1px solid #000000; /* Change the color as needed */
+  padding-top: 0px; /* Adjust the padding as needed */
+  margin-top: 0px; /* Adjust the margin as needed */
 }
 
 .subscribe_area::before {
@@ -8648,9 +8684,26 @@ font-size: 10px;
   transition: color 0.3s;
 }
 
-/* address in checkout */
+/* carousel */
+
+.carousel-indicators {
+  bottom: 10px; /* Adjust the bottom spacing as needed */
+}
+
+.carousel-indicators li {
+  background-color: #fff; /* Change the background color */
+  border: 1px solid #000; /* Change the border color */
+  margin-right: 8px; /* Adjust the right margin as needed */
+  width: 10px; /* Set the width of the indicators */
+  height: 10px; /* Set the height of the indicators */
+}
+
+.carousel-indicators .active {
+  background-color: #000; /* Change the active indicator color */
+}
  
-/* slider css */
+/* icon media query */
+
 /* Import Google Font - Poppins */
 
 /*# sourceMappingURL=style.css.map */

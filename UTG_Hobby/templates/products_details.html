@@ -223,35 +223,10 @@
   <!--================End Product Description Area =================-->
 
   <!-- product_list part start-->
-  <section class="product_list best_seller">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-12">
-          <div class="section_tittle text-center">
-            <h2>Best Sellers <span>shop</span></h2>
-          </div>
-        </div>
-      </div>
-      <div class="row align-items-center justify-content-between">
-        <div class="col-lg-12">
-          <div class="best_product_slider owl-carousel">
-            {% if product %}
-              <div class="single_product_item">
-                <a href="../products_details/{{product.id}}"><img src="{{product.images.allast.image.url}}" alt="" /></a>
-                  <div class="single_product_text">
-                    <h4>{{product.product.products_name}}</h4>
-                  <h3>${{product.price}}</h3>
-                </div>
-              </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+
   <!-- product_list part end-->
-  <script src="{% static "assets_products/js/theme.js" %}"></script>
-  <script src="{% static "assets_products/js/swiper.jquery.js" %}"></script>
+  <script src="{% static "assets_home/js/theme.js" %}"></script>
+  <script src="{% static "assets_home/js/swiper.jquery.js" %}"></script>
   <!-- Add this to the head section of your HTML -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   {% block script %}

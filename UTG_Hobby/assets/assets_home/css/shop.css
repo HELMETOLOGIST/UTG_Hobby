@@ -75,9 +75,6 @@ button.btn.btn-hide {
 	background-color: #994a00
 }
 
-/* .navbar {
-	display: inline-flex
-} */
 
 .pagination .page-item .page-link {
 	color: #333;
@@ -517,18 +514,7 @@ input[type=range]::-webkit-slider-thumb {
 	}
 }
 
-@media(max-width: 991.5px) {
-	.navbar-nav {
-		min-width: 290px;
-		position: absolute;
-		left: -168px;
-		bottom: -146px;
-		padding: 20px 10px;
-		display: block;
-		background-image: none;
-		z-index: 2;
-		background-color: #1d1c1cb2
-	}
+
 
 	#filterbar {
 		width: 36%
@@ -561,7 +547,6 @@ input[type=range]::-webkit-slider-thumb {
 	.price {
 		font-size: 0.85rem
 	}
-}
 
 @media(max-width: 767.5px) {
 	#filterbar {

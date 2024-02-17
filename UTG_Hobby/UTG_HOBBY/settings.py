@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-x^5gb^x2l$7-*n%%874!$b^a85386jis9og_3e8h^seuqp=qxk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','utghobby.online']
 
 # Google Authentication Area
 SITE_ID = 5
@@ -187,8 +187,8 @@ LOGIN_URL = 'login'
 #Session Engine
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 #Razorpay API Keys
-RAZORPAY_API_KEY = config('RAZORPAY_API_KEY', default='rzp_test_uVOZmd57SunofW')
-RAZORPAY_API_SECRET_KEY = config('RAZORPAY_API_SECRET_KEY', default='mfTY9FeuzBTeYGhZB0no3TRL')
+RAZORPAY_API_KEY = config('RAZORPAY_API_KEY')
+RAZORPAY_API_SECRET_KEY = config('RAZORPAY_API_SECRET_KEY')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
@@ -204,5 +204,6 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('CLIENT_SECRET')
 
