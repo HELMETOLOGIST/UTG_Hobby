@@ -2104,12 +2104,12 @@ ul {
 /**************menu part start*****************/
 /* line 2, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_menu.scss */
 .main_menu {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   z-index: 999;
-  background-color: orange;
+  background-color: rgb(0, 0, 0);
   height: 82px!important;
   display: flex;
   align-items: center;
