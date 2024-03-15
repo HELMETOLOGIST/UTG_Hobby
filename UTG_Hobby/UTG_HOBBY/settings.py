@@ -122,7 +122,7 @@ DATABASES = {
 }
 
 
-# DATABASES["default"] = dj_database_url.parse("postgres://utghobby_django_render_user:3MXhKyhW1OXYLrPo2DDnaBEfyhe4k9NL@dpg-cnq3femn7f5s73f7st90-a.oregon-postgres.render.com/utghobby_django_render")
+DATABASES["default"] = dj_database_url.parse("postgres://utghobby_django_render_user:3MXhKyhW1OXYLrPo2DDnaBEfyhe4k9NL@dpg-cnq3femn7f5s73f7st90-a.oregon-postgres.render.com/utghobby_django_render")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
