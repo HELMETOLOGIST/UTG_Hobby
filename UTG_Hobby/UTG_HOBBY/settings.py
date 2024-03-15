@@ -74,6 +74,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
