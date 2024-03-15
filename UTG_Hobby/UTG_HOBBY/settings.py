@@ -110,19 +110,24 @@ AUTH_USER_MODEL = 'user_authentication.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "utg_hobby",
-        "USER": "postgres",
-        "PASSWORD": "2315",
-        "HOST": "localhost",
-        "PORT": "5432",
+
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    DATABASES = {'default': dj_database_url.config(default=database_url)}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "utg_hobby",
+            "USER": "postgres",
+            "PASSWORD": "2315",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
     }
-}
 
 
-DATABASES["default"] = dj_database_url.parse("postgres://utghobby_django_render_user:3MXhKyhW1OXYLrPo2DDnaBEfyhe4k9NL@dpg-cnq3femn7f5s73f7st90-a.oregon-postgres.render.com/utghobby_django_render")
+# DATABASES["default"] = dj_database_url.parse("")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
