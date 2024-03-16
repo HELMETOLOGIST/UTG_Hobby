@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +26,7 @@ SECRET_KEY = 'django-insecure-x^5gb^x2l$7-*n%%874!$b^a85386jis9og_3e8h^seuqp=qxk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*','utghobby.online']
+ALLOWED_HOSTS = ['*']
 
 # Google Authentication Area
 SITE_ID = 5
@@ -111,7 +110,12 @@ AUTH_USER_MODEL = 'user_authentication.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# backports.zoneinfo==0.2.1;python_version<"3.9"
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
+import dj_database_url
 database_url = os.getenv('DATABASE_URL')
 if database_url:
     DATABASES = {'default': dj_database_url.config(default=database_url)}
@@ -126,9 +130,6 @@ else:
             "PORT": "5432",
         }
     }
-
-
-# DATABASES["default"] = dj_database_url.parse("")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -159,7 +160,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
